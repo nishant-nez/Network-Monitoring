@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 //@desc Register a User
 //@route POST /api/users/register
 //@access public
@@ -25,10 +26,10 @@ const registerUser = asyncHandler(async (req, res) => {
     const user = await User.create({
         username,
         password: hashedPassword,
-    })
+    });
 
     if (user) {
-        res.status(201).json({ _id: user.id, email: user.email });
+        res.status(201).json({ _id: user.id, username: user.username });
     } else {
         res.status(400);
         throw new Error("Invalid user data");
@@ -59,13 +60,36 @@ const loginUser = asyncHandler(async (req, res) => {
         },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: "2h",
+                expiresIn: "4h",
             }
         );
         res.status(200).json({ accessToken });
     } else {
         res.status(400);
         throw new Error("Invalid login credentials!");
+    }
+});
+
+
+//@desc Update user info
+//@route PUT /api/users/update
+//@access private
+const updateUser = asyncHandler(async (req, res) => {
+    const id = req.user.id;
+    const updatedUser = await User.findOneAndUpdate(
+        {
+            _id: id,
+        },
+        {
+            ...req.body,
+        },
+        { new: true },
+    );
+    if (updatedUser) {
+        res.status(200).json({ _id: updatedUser.id, username: updatedUser.username });
+    } else {
+        res.status(400);
+        throw new Error("Could not update!");
     }
 });
 
@@ -79,4 +103,4 @@ const currentUser = asyncHandler(async (req, res) => {
 
 
 
-module.exports = { registerUser, loginUser, currentUser };
+module.exports = { registerUser, loginUser, currentUser, updateUser };

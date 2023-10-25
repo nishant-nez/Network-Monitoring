@@ -1,4 +1,6 @@
 const express = require("express");
+const cron = require("node-cron");
+const updateDeviceStatus = require("./config/updateDeviceStatus");
 const connectDb = require("./config/dbConnection");
 const errorHandler = require("./middleware/errorHandler");
 const dotenv = require("dotenv").config();
@@ -16,9 +18,15 @@ app.use('/api/users', require("./routes/userRoute"));
 app.use('/api/devices', require("./routes/deviceRoute"));
 app.use('/api/recipitents', require("./routes/emailRecipientRoute"));
 app.use('/api/history', require("./routes/historyRoute"));
+app.use('/api/recipients', require("./routes/emailRecipientRoute"));
 
 // middlewares
 app.use(errorHandler);
+
+// cron job
+cron.schedule('*/5 * * * *', () => {
+    updateDeviceStatus();
+});
 
 app.listen(port, (error) => {
     if (!error) {

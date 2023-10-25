@@ -14,6 +14,10 @@ const deviceSchema = mongoose.Schema(
             type: String,
             required: [true, "Please add the device ip address"],
         },
+        location: {
+            type: String,
+            required: [true, "Please add the device location"],
+        },
         description: {
             type: String,
         },

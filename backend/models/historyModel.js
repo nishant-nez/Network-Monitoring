@@ -10,6 +10,11 @@ const historySchema = mongoose.Schema({
         enum: ['up', 'down', 'unknown'],
         required: true,
     },
+    responseTime: {
+        type: String,
+        required: true,
+    },
+
     timestamp: {
         type: Date,
         default: Date.now,

@@ -76,12 +76,15 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access private
 const updateUser = asyncHandler(async (req, res) => {
     const id = req.user.id;
+    const { pass } = req.body;
+    // hash password
+    const hashedPassword = await bcrypt.hash(pass, 10);
     const updatedUser = await User.findOneAndUpdate(
         {
             _id: id,
         },
         {
-            ...req.body,
+            password: hashedPassword
         },
         { new: true },
     );

@@ -3,6 +3,7 @@ const cron = require("node-cron");
 const updateDeviceStatus = require("./config/updateDeviceStatus");
 const connectDb = require("./config/dbConnection");
 const errorHandler = require("./middleware/errorHandler");
+const cors = require("cors")
 const dotenv = require("dotenv").config();
 
 connectDb();
@@ -11,6 +12,8 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+
+app.use(cors());
 
 // routes
 app.get('/', (req, res) => res.status(200).json({ message: "Welcome to the API!" }));

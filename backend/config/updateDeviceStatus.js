@@ -3,11 +3,13 @@ const Device = require("../models/deviceModel");
 const History = require("../models/historyModel");
 
 const updateDeviceStatus = async () => {
-    console.time("Cron took");
-    console.log("\nCron job ran (nice) - " + new Date);
+    // console.time("Cron took");
+    // console.log("\nCron job ran (nice) - " + new Date);
     try {
         ////
         const devices = await Device.find({});
+        // console.log('devices result: ')
+        // console.log(devices);
         if (devices.length === 0) {
             console.log("No device found!");
         } else {
@@ -27,14 +29,14 @@ const updateDeviceStatus = async () => {
                     status: status,
                     responseTime: responseTime,
                 });
-                console.log(`Device ${ device.name } with IP ${ device.ip } has current status: ${ status } with response time of: ${ responseTime }ms`);
+                // console.log(`Device ${ device.name } with IP ${ device.ip } has current status: ${ status } with response time of: ${ responseTime }ms`);
             }
         }
     } catch (error) {
         console.log("Error: ", error);
     }
-    console.log('\n');
-    console.timeEnd("Cron took");
+    // console.log('\n');
+    // console.timeEnd("Cron took");
 };
 
 

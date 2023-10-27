@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { backend } from '../constants';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const AuthContext = createContext();
 
@@ -13,42 +14,49 @@ const AuthContextProvider = (props) => {
     });
 
     const toggleLogin = async () => {
-        console.log('toggleLogin');
-        const userToken = JSON.parse(localStorage.getItem('user'));
-        setToken(userToken);
-        console.log("local storage token: ");
-        console.log(JSON.parse(localStorage.getItem('user')));
-        console.log('token variable: ');
-        console.log(userToken);
 
-        if (userToken) {
-            console.log('if token');
-            try {
-                const response = await fetch(backend + '/api/users/current', {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${ userToken }`,
-                        'Content-Type': 'application/json',
+        try {
+            console.log('toggleLogin');
+            const userToken = JSON.parse(localStorage.getItem('user'));
+            setToken(userToken);
+            console.log("local storage token: ");
+            console.log(JSON.parse(localStorage.getItem('user')));
+            console.log('token variable: ');
+            console.log(userToken);
+
+            if (userToken) {
+                console.log('if token');
+                try {
+                    const response = await fetch(backend + '/api/users/current', {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${ userToken }`,
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    console.log("before checking response: ", response);
+
+                    if (response.ok) {
+                        setIsLoggedin(true);
+                        console.log('response good');
+                        console.log('isLoggedin: ', isLoggedin);
+                    } else {
+                        console.log('response bad');
+                        setIsLoggedin(false);
                     }
-                });
-
-                console.log("before checking response: ", response);
-
-                if (response.ok) {
-                    setIsLoggedin(true);
-                    console.log('response good');
-                    console.log('isLoggedin: ', isLoggedin);
-                } else {
-                    console.log('response bad');
+                } catch (error) {
+                    console.error(error);
                     setIsLoggedin(false);
                 }
-            } catch (error) {
-                console.error(error);
+            } else {
+                console.log('else token');
                 setIsLoggedin(false);
             }
-        } else {
-            console.log('else token');
+        } catch (err) {
+            console.log(err);
             setIsLoggedin(false);
+            localStorage.removeItem('user');
         }
     }
 

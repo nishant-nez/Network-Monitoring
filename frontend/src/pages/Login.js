@@ -6,6 +6,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { backend } from '../constants';
 
 const Login = () => {
+    document.title = "Login | Network Monitoring";
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState(null);

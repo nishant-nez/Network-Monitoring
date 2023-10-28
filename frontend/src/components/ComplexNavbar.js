@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import {
     Navbar,
     Collapse,
@@ -21,6 +22,7 @@ import {
     WifiIcon,
     ServerIcon,
     ComputerDesktopIcon,
+    GlobeAltIcon,
 } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
@@ -78,7 +80,7 @@ function ProfileMenu() {
                                 setIsMenuOpen(false);
                                 if (label === "Sign Out") {
                                     toggleLogout();
-                                    console.log("logout");
+                                    console.log("toggle logout called by NAVBAR");
                                 }
                             } }
                             className={ `flex items-center gap-2 rounded ${ isLastItem
@@ -112,22 +114,27 @@ const navListItems = [
     {
         label: "Home",
         icon: HomeIcon,
-        goto: '#',
+        goto: '/',
     },
     {
         label: "Switch",
         icon: ServerIcon,
-        goto: '#',
+        goto: '/switch',
     },
     {
         label: "AP",
         icon: WifiIcon,
-        goto: '#',
+        goto: '/ap',
+    },
+    {
+        label: "Domain",
+        icon: GlobeAltIcon,
+        goto: '/domain',
     },
     {
         label: "Other",
         icon: ComputerDesktopIcon,
-        goto: '#',
+        goto: '/other',
     },
 ];
 
@@ -135,20 +142,20 @@ function NavList() {
     return (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
             {/* <NavListMenu /> */ }
-            { navListItems.map(({ label, icon, goto }, key) => (
-                <Typography
-                    as="a"
-                    href={ goto }
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium"
-                    key={ uuidv4() }
-                >
-                    <MenuItem className="flex items-center gap-2 lg:rounded-full">
-                        { React.createElement(icon, { className: "h-[18px] w-[18px]" }) }{ " " }
-                        <span className="text-gray-900"> { label }</span>
-                    </MenuItem>
-                </Typography>
+            { navListItems.map(({ label, icon, goto }) => (
+                <Link to={ goto } key={ uuidv4() }>
+                    <Typography
+                        as="p"
+                        variant="h6"
+                        color="blue-gray"
+                        className="font-medium"
+                    >
+                        <MenuItem className="flex items-center gap-2 lg:rounded-full">
+                            { React.createElement(icon, { className: "h-[20px] w-[20px]" }) }{ " " }
+                            <span className="text-gray-900"> { label }</span>
+                        </MenuItem>
+                    </Typography>
+                </Link>
             )) }
         </ul>
     );
@@ -167,12 +174,12 @@ export default function ComplexNavbar() {
     }, []);
 
     return (
-        <Navbar className="mx-auto min-w-[100%] p-2 lg:rounded-lg  lg:pl-6">
+        <Navbar className="mx-auto min-w-[100%] p-5 lg:rounded-lg  lg:pl-6">
             <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
                 <Typography
                     as="a"
                     href="/"
-                    variant="h6"
+                    variant="h5"
                     className="mr-4 cursor-pointer py-1.5 lg:ml-2"
                 >
                     Network Monitor

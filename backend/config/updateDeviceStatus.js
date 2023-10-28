@@ -4,7 +4,7 @@ const History = require("../models/historyModel");
 
 const updateDeviceStatus = async () => {
     // console.time("Cron took");
-    // console.log("\nCron job ran (nice) - " + new Date);
+    console.log("\nCron job ran (nice) - " + new Date);
     try {
         ////
         const devices = await Device.find({});
@@ -29,7 +29,7 @@ const updateDeviceStatus = async () => {
                     status: status,
                     responseTime: responseTime,
                 });
-                // console.log(`Device ${ device.name } with IP ${ device.ip } has current status: ${ status } with response time of: ${ responseTime }ms`);
+                console.log(`Device ${ device.name } with IP ${ device.ip } has current status: ${ status } with response time of: ${ responseTime }ms`);
             }
         }
     } catch (error) {

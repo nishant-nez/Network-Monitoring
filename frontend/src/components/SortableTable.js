@@ -1,4 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
+import { useContext, useState, useEffect } from "react";
+import { DeviceContext } from "../contexts/DeviceContext";
 import {
     MagnifyingGlassIcon,
     ChevronUpDownIcon,
@@ -27,12 +29,12 @@ const TABS = [
         value: "all",
     },
     {
-        label: "Monitored",
-        value: "monitored",
+        label: "Up",
+        value: "up",
     },
     {
-        label: "Unmonitored",
-        value: "unmonitored",
+        label: "Down",
+        value: "down",
     },
 ];
 
@@ -46,59 +48,94 @@ const TimeAgoNoSuffix = (date) => {
 }
 
 export default function SortableTable(props) {
-    const data = props.data;
+    const [selectedTab, setSelectedTab] = useState('all');
+    const { devices } = useContext(DeviceContext);
+    const [data, setData] = useState([]);
     const TABLE_ROWS = [];
 
-    data.map((item) => {
-        console.log(item.ip);
-        TABLE_ROWS.push({
-            id: item._id,
-            name: item.name,
-            location: item.location,
-            ip: item.ip,
-            type: item.type,
-            status: item.status,
-            responseTime: item.responseTime === '-1' ? 'n/a' : item.responseTime + 'ms',
-            lastUpdated: item.status === 'down' ? '(Down since) ' + TimeAgoNoSuffix(item.updatedAt) : TimeAgo(item.updatedAt),
-        });
-        return item;
-    });
-    TABLE_ROWS.sort((a, b) => {
-        if (a.status === 'down' && b.status !== 'down') {
-            return -1; // 'down' comes before other statuses
-        } else if (a.status !== 'down' && b.status === 'down') {
-            return 1; // Other statuses come after 'down'
+    // Use useEffect to update data when the selected tab or devices change
+    useEffect(() => {
+        // Filter data based on the selected tab
+        let filteredData = devices;
+
+        if (selectedTab === 'all') {
+            // No tab filtering
+        } else if (selectedTab === 'up') {
+            filteredData = devices.filter((device) => device.status === 'up');
         } else {
-            return 0; // Maintain the order for other statuses
+            filteredData = devices.filter((device) => device.status === 'down');
         }
-    });
+
+        // Filter based on props.filter if it's not an empty string
+        if (props.filter !== '') {
+            filteredData = filteredData.filter((device) => device.type === props.filter);
+        }
+
+        // Set the filtered data to state
+        setData(filteredData);
+        // console.log('CURRENT DATA : ', )
+    }, [selectedTab, devices, props.filter]);
+
+    if (data) {
+        data.map((item) => {
+            TABLE_ROWS.push({
+                id: item._id,
+                name: item.name,
+                location: item.location,
+                ip: item.ip,
+                type: item.type,
+                status: item.status,
+                responseTime: item.responseTime === '-1' ? 'n/a' : item.responseTime + 'ms',
+                lastUpdated: item.status === 'down' ? '(Down since) ' + TimeAgoNoSuffix(item.updatedAt) : TimeAgo(item.updatedAt),
+            });
+            return item;
+        });
+
+        TABLE_ROWS.sort((a, b) => {
+            if (a.status === 'down' && b.status !== 'down') {
+                return -1; // 'down' comes before other statuses
+            } else if (a.status !== 'down' && b.status === 'down') {
+                return 1; // Other statuses come after 'down'
+            } else {
+                return 0; // Maintain the order for other statuses
+            }
+        });
+    }
+
+    const handleTabChange = (value) => {
+        setSelectedTab(value);
+    };
 
     return (
         <Card className="h-full max-h-[100vh] w-full">
-            { !data && <div>No data found!</div> }
-            { data &&
+            <CardHeader floated={ false } shadow={ false } className="rounded-none pt-2">
+                <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <Tabs value={ selectedTab } className="w-full md:w-max">
+                        <TabsHeader>
+                            { TABS.map(({ label, value }) => (
+                                <Tab
+                                    key={ value }
+                                    value={ value }
+                                    onClick={ () => handleTabChange(value) }
+                                >
+                                    &nbsp;&nbsp;{ label }&nbsp;&nbsp;
+                                </Tab>
+                            )) }
+                        </TabsHeader>
+                    </Tabs>
+                    <div className="w-full md:w-72">
+                        <Input
+                            label="Search"
+                            icon={ <MagnifyingGlassIcon className="h-5 w-5" /> }
+                        />
+                    </div>
+                </div>
+            </CardHeader>
+            { !data && <div className="p-8 text-center">Database is Empty!</div> }
+            { TABLE_ROWS.length === 0 && <div className="p-8 text-center">Empty!</div> }
+            { data && data !== '' && TABLE_ROWS.length !== 0 &&
                 <>
 
-
-                    <CardHeader floated={ false } shadow={ false } className="rounded-none pt-2">
-                        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                            <Tabs value="all" className="w-full md:w-max">
-                                <TabsHeader>
-                                    { TABS.map(({ label, value }) => (
-                                        <Tab key={ value } value={ value }>
-                                            &nbsp;&nbsp;{ label }&nbsp;&nbsp;
-                                        </Tab>
-                                    )) }
-                                </TabsHeader>
-                            </Tabs>
-                            <div className="w-full md:w-72">
-                                <Input
-                                    label="Search"
-                                    icon={ <MagnifyingGlassIcon className="h-5 w-5" /> }
-                                />
-                            </div>
-                        </div>
-                    </CardHeader>
                     <CardBody className="overflow-scroll px-0">
                         <table className="mt-4 w-full min-w-max table-auto text-left">
                             <thead>
@@ -114,9 +151,10 @@ export default function SortableTable(props) {
                                                 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
                                             >
                                                 { head }{ " " }
-                                                { index !== TABLE_HEAD.length - 1 && (
+                                                {/* { index !== TABLE_HEAD.length - 1 && (
                                                     <ChevronUpDownIcon strokeWidth={ 2 } className="h-4 w-4" />
-                                                ) }
+                                                ) } */}
+                                                {/* { index !== TABLE_HEAD.length - 1 } */ }
                                             </Typography>
                                         </th>
                                     )) }

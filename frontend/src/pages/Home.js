@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../contexts/AuthContext";
+import { DeviceContext } from '../contexts/DeviceContext';
 import { Spinner } from '@material-tailwind/react';
 import { ToastContainer, toast } from 'react-toastify';
 import ComplexNavbar from '../components/ComplexNavbar';
 import SortableTable from '../components/SortableTable';
 import useFetch from '../hooks/useFetch';
+import { backend } from '../constants';
 import {
     Typography, Button,
     Dialog,
@@ -14,28 +16,66 @@ import {
     DialogFooter,
 } from "@material-tailwind/react";
 import { PencilIcon, UserPlusIcon, PlusIcon, UserIcon } from "@heroicons/react/24/solid";
-import AddDeviceForm from "../components/AddDeviceForm";
+// import AddDeviceForm from "../components/AddDeviceForm";
+import Overview from '../components/Overview';
+
 
 
 const Home = () => {
+    document.title = "Home | Network Monitoring";
     const navigate = useNavigate();
     const { isLoggedin, toggleLogin, toggleLogout } = useContext(AuthContext);
+    const { devices, updateDevices } = useContext(DeviceContext);
     // const [data, setData] = useState(null);
     const { data, isPending, error } = useFetch('/api/devices');
-
     const [open, setOpen] = React.useState(false);
+
+    const [isClicked, setIsClicked] = useState(false);
 
     const handleOpen = () => setOpen(!open);
 
-    console.log('Home Component Rendered');
-    console.log('Is Logged in:', isLoggedin);
+    const fetchData = () => {
+        fetch('/api/devices') // You can use the appropriate URL here
+            .then((res) => {
+                if (res.status === 401) {
+                    // handleOpen();
+                    toggleLogout();
+                    console.log('toggle logout called by HOME ko FETCHDATA')
+                } else if (!res.ok) {
+                    // handleOpen();
+                    throw Error('Could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((newData) => {
+                updateDevices(newData);
+                setIsClicked(!isClicked);
+            })
+            .catch((err) => {
+                // handleOpen();
+                console.error(`Error: ${ err }`);
+                // Handle error
+            });
+    };
+
+    // Use setInterval to periodically fetch data
+    useEffect(() => {
+        const intervalId = setInterval(fetchData, 180000); // Fetch data every 5 minutes (300,000 ms)
+
+        // Clean up the interval on unmount
+        return () => clearInterval(intervalId);
+    }, []);
 
     useEffect(() => {
         if (!isLoggedin) {
             navigate("/login");
         }
-
-    }, [isLoggedin, navigate]);
+    }, [isLoggedin, navigate, isClicked]);
+    useEffect(() => {
+        if (data) {
+            updateDevices(data);
+        }
+    }, [data, updateDevices]);
 
     // FORM
     const [name, setName] = useState('');
@@ -43,20 +83,73 @@ const Home = () => {
     const [ip, setIP] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
+    const [token, setToken] = useState(() => {
+        const storedToken = localStorage.getItem('user');
+        return storedToken ? JSON.parse(storedToken) : null;
+    });
 
-    const handleSubmit = (e) => {
+    function handleSubmit(e) {
         e.preventDefault();
 
         const device = { name, type, ip, location, description };
         console.log('device:')
         console.log(device);
+
+        if (name && type && ip && location) {
+            fetch(backend + '/api/devices', {
+                method: 'POST',
+                body: JSON.stringify(device),
+                headers: {
+                    Authorization: `Bearer ${ token }`,
+                    'Content-Type': 'application/json',
+                }
+            }).then(res => {
+                if (res.status === 401) {
+                    handleOpen();
+                    toggleLogout();
+                    console.log('toggle logout called by HOME LINE 110')
+                } else if (!res.ok) {
+                    handleOpen();
+                    console.log('status: ')
+                    console.log(res.status);
+                    throw Error('Could not fetch the data for that resource');
+                }
+                return res.json();
+            }).then((data) => {
+                handleOpen();
+                toast.success('Device added!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                setIsClicked(!isClicked);
+            }).catch(err => {
+                handleOpen();
+                toast.error(`Error: ${ err }`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            });
+        }
+
     };
 
     return (
         <div className="home">
             <ComplexNavbar />
 
-            { isPending && <Spinner /> }
+            { isPending && <div className='flex items-center justify-center z-50'><Spinner /></div> }
 
             { error && toast.error(`Error: ${ error }`, {
                 position: "bottom-right",
@@ -71,57 +164,18 @@ const Home = () => {
 
             { data && <>
                 <div className="mb-8 flex items-center justify-between gap-8">
-                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row absolute right-10 bottom-10">
-                        <Button className="flex items-center gap-3 text-lg z-10" size="sm" onClick={ handleOpen }>
+                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
+                        <Button className="flex items-center gap-3 text-lg" size="sm" onClick={ handleOpen }>
                             <PlusIcon strokeWidth={ 2 } className="h-4 w-4" /> Add Device
                         </Button>
                     </div>
                 </div>
 
-                <div className="overview mx-14 bg-white rounded-lg shadow-lg p-10">
-                    <Typography>
-                        <h1 className="text-2xl font-bold text-gray-800 pb-6">Overview</h1>
-                    </Typography>
-                    <div className="flex flex-col min-w-full sm:flex-row md:flex-row">
-                        <div className="count-card flex items-center gap-4 mr-6 bg-[#49596a] rounded-lg p-4 min-w-[200px]">
-                            <img src={ process.env.PUBLIC_URL + './switch.png' } alt="" />
-                            <div className="count-content text-center">
-                                <h1 className="text-base font-bold text-white">SWITCHES</h1>
-                                <div className='text-gray-100'>
-                                    { data.filter(device => device.type === 'Switch').length }
-                                </div>
-                            </div>
-                        </div>
-                        <div className="count-card flex items-center gap-4 mr-6 bg-[#49596a] rounded-lg p-4 w-[200px]">
-                            <img src={ process.env.PUBLIC_URL + './ap.png' } alt="" />
-                            <div className="count-content text-center">
-                                <h1 className="text-base font-bold text-white">AP's</h1>
-                                <div className='text-gray-100'>
-                                    { data.filter(device => device.type === 'Access Point').length }
-                                </div>
-                            </div>
-                        </div>
-                        <div className="count-card flex items-center gap-4 mr-6 bg-[#49596a] rounded-lg p-4 min-w-[200px]">
-                            <img src={ process.env.PUBLIC_URL + './computer.png' } alt="" />
-                            <div className="count-content text-center">
-                                <h1 className="text-base font-bold text-white">OTHER</h1>
-                                <div className='text-gray-100'>
-                                    { data.filter(device => device.type !== 'Switch' && device.type !== 'Access Point').length }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
+                <Overview data={ data } />
 
                 <div className="main-table mx-14 my-10">
-                    <SortableTable data={ data } />
+                    <SortableTable filter={ '' } />
                 </div>
-                <h2>Home Page</h2>
-                <p>Is Logged in: { isLoggedin ? 'true' : 'false' }</p>
-                <button onClick={ toggleLogin }>Login</button>
-                <button onClick={ toggleLogout }>Logout</button>
 
                 {/* <AddDeviceForm open={ open } handleOpen={ handleOpen } />
                  */}
@@ -154,6 +208,7 @@ const Home = () => {
                                 >
                                     <option>Switch</option>
                                     <option>Access Point</option>
+                                    <option>Domain</option>
                                     <option>Others</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -203,10 +258,10 @@ const Home = () => {
                                 {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                                 Add Device
                             </button> */}
-                                { !isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ () => { } }>
+                                { !isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit'>
                                     Add Device
                                 </Button> }
-                                { isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ () => { } }>
+                                { isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit'>
                                     Add Device
                                 </Button> }
                             </div>
@@ -228,7 +283,7 @@ const Home = () => {
                 </Dialog>
             </> }
 
-            <ToastContainer
+            <ToastContainer className="z-50"
                 position="bottom-right"
                 autoClose={ 5000 }
                 hideProgressBar={ false }

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from "../contexts/AuthContext";
 import { backend } from '../constants';
+import TestPage from "../components/BackgroundParticles";
 
 const Login = () => {
     document.title = "Login | Network Monitoring";
@@ -77,8 +78,9 @@ const Login = () => {
     return (
         <div className="main-content">
             { isLoggedin && navigate("/") }
+            <TestPage />
             <div className="min-w-full min-h-[100vh] flex justify-center items-center bg-gray-200">
-                <div className="login-box rounded-lg bg-gray-100 shadow-lg hover:shadow-xl">
+                <div className="login-box rounded-lg bg-gray-100 shadow-lg hover:shadow-xl z-50">
                     <div className="login-items w-full">
                         <div className="relative w-[670px] h-[179px] rounded-tl-lg rounded-tr-lg bg-[url('https://colorlib.com/etc/lf/Login_v15/images/bg-01.jpg')]">
                             <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-70 rounded-tl-lg rounded-tr-lg">

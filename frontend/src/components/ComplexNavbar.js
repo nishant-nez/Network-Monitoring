@@ -26,7 +26,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { v4 as uuidv4 } from 'uuid';
+import { uuidv7 as uuidv4 } from 'uuidv7';
 
 // profile menu component
 const profileMenuItems = [

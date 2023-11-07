@@ -10,7 +10,9 @@ import AP from './pages/AP';
 import Other from './pages/Other';
 import Domain from './pages/Domain';
 import NotFound from './pages/NotFound';
-
+import DeviceDetails from './pages/DeviceDetails';
+// import DeviceDetails from './pages/TestPage';
+// 
 
 function App() {
   return (
@@ -42,6 +44,11 @@ function App() {
               exact
               path="/other"
               element={ <Other /> }
+            />
+            <Route
+              exact
+              path="/device/:id"
+              element={ <DeviceDetails /> }
             />
             <Route
               exact

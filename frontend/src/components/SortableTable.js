@@ -1,4 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { DeviceContext } from "../contexts/DeviceContext";
 import {
@@ -248,11 +249,13 @@ export default function SortableTable(props) {
                                                     </Typography>
                                                 </td>
                                                 <td className={ classes }>
-                                                    <Tooltip content="Edit Device">
-                                                        <IconButton variant="text">
-                                                            <PencilIcon className="h-4 w-4" />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                    <Link to={ '/device/' + id }>
+                                                        <Tooltip content="Edit Device">
+                                                            <IconButton variant="text">
+                                                                <PencilIcon className="h-4 w-4" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         );

@@ -1,0 +1,20 @@
+# Use the desired Node.js version as the parent image (e.g., Node.js 16)
+FROM node:21
+
+# Set the working directory to /frontend
+WORKDIR /frontend
+
+# Copy package.json and package-lock.json to the working directory
+COPY frontend/package*.json ./
+
+# Install any needed packages specified in package.json
+RUN npm install
+
+# Copy the rest of the application code
+COPY frontend/ .
+
+# Make port 3003 available to the world outside this container
+EXPOSE 3003
+
+# Define the command to run your application
+CMD [ "npm", "start" ]

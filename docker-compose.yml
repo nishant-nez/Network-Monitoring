@@ -1,0 +1,33 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: . # Build from the current directory
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5005:5005" # Map container port to host port
+    depends_on:
+      - mongo # Assuming you have a MongoDB container
+    volumes:
+      - backend-data:/backend/data
+
+  frontend:
+    build:
+      context: . # Build from the current directory
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3003:3003" # Map container port to host port
+
+  mongo:
+    image: mongo:latest # Use the official MongoDB image
+    ports:
+      - "27017:27017" # Map container port to host port
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  backend-data:
+  mongodb-data:
+  node_modules:
+  web-root:
+    driver: local

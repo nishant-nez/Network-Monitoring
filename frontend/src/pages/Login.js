@@ -78,7 +78,7 @@ const Login = () => {
     return (
         <div className="main-content">
             { isLoggedin && navigate("/") }
-            <TestPage />
+            {/* <TestPage /> */ }
             <div className="min-w-full min-h-[100vh] flex justify-center items-center bg-gray-200">
                 <div className="login-box rounded-lg bg-gray-100 shadow-lg hover:shadow-xl z-50">
                     <div className="login-items w-full">

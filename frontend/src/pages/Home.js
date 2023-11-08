@@ -276,9 +276,6 @@ const Home = () => {
                         >
                             <span>Cancel</span>
                         </Button>
-                        {/* <Button variant="gradient" color="green" onClick={ props.handleOpen }>
-                        <span>Confirm</span>
-                    </Button> */}
                     </DialogFooter>
                 </Dialog>
             </> }

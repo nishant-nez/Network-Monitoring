@@ -11,6 +11,7 @@ import Other from './pages/Other';
 import Domain from './pages/Domain';
 import NotFound from './pages/NotFound';
 import DeviceDetails from './pages/DeviceDetails';
+import Profile from './pages/Profile'
 // import DeviceDetails from './pages/TestPage';
 // 
 
@@ -54,6 +55,11 @@ function App() {
               exact
               path="/domain"
               element={ <Domain /> }
+            />
+            <Route
+              exact
+              path="/profile"
+              element={ <Profile /> }
             />
             <Route
               path="*"

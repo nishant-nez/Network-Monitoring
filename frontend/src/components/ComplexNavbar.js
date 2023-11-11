@@ -27,17 +27,18 @@ import {
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { uuidv7 as uuidv4 } from 'uuidv7';
+import { useNavigate } from "react-router-dom";
 
 // profile menu component
 const profileMenuItems = [
     {
-        label: "My Profile",
+        label: "Profile",
         icon: UserCircleIcon,
     },
-    {
-        label: "Edit Profile",
-        icon: Cog6ToothIcon,
-    },
+    // {
+    //     label: "Edit Profile",
+    //     icon: Cog6ToothIcon,
+    // },
     {
         label: "Sign Out",
         icon: PowerIcon,
@@ -47,6 +48,7 @@ const profileMenuItems = [
 function ProfileMenu() {
     const { toggleLogout } = useContext(AuthContext);
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     return (
         <Menu open={ isMenuOpen } handler={ setIsMenuOpen } placement="bottom-end">
@@ -81,6 +83,8 @@ function ProfileMenu() {
                                 if (label === "Sign Out") {
                                     toggleLogout();
                                     console.log("toggle logout called by NAVBAR");
+                                } else if (label === "Profile") {
+                                    navigate('/profile');
                                 }
                             } }
                             className={ `flex items-center gap-2 rounded ${ isLastItem

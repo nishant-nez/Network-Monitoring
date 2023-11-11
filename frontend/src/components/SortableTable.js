@@ -56,25 +56,27 @@ export default function SortableTable(props) {
 
     // Use useEffect to update data when the selected tab or devices change
     useEffect(() => {
-        // Filter data based on the selected tab
-        let filteredData = devices;
+        if (devices) {
+            // Filter data based on the selected tab
+            let filteredData = devices;
 
-        if (selectedTab === 'all') {
-            // No tab filtering
-        } else if (selectedTab === 'up') {
-            filteredData = devices.filter((device) => device.status === 'up');
-        } else {
-            filteredData = devices.filter((device) => device.status === 'down');
+            if (selectedTab === 'all') {
+                // No tab filtering
+            } else if (selectedTab === 'up') {
+                filteredData = devices.filter((device) => device.status === 'up');
+            } else {
+                filteredData = devices.filter((device) => device.status === 'down');
+            }
+
+            // Filter based on props.filter if it's not an empty string
+            if (props.filter !== '') {
+                filteredData = filteredData.filter((device) => device.type === props.filter);
+            }
+
+            // Set the filtered data to state
+            setData(filteredData);
+            // console.log('CURRENT DATA : ', )
         }
-
-        // Filter based on props.filter if it's not an empty string
-        if (props.filter !== '') {
-            filteredData = filteredData.filter((device) => device.type === props.filter);
-        }
-
-        // Set the filtered data to state
-        setData(filteredData);
-        // console.log('CURRENT DATA : ', )
     }, [selectedTab, devices, props.filter]);
 
     if (data) {

@@ -1,15 +1,21 @@
 const ping = require("ping");
 const Device = require("../models/deviceModel");
 const History = require("../models/historyModel");
+const emailRecipient = require("../models/emailRecipientModel");
+
+const sendMail = require("./sendMail");
 
 const updateDeviceStatus = async () => {
-    // console.time("Cron took");
     console.log("\nCron job ran (nice) - " + new Date);
     try {
         ////
         const devices = await Device.find({});
-        // console.log('devices result: ')
-        // console.log(devices);
+        const recipients = await emailRecipient.find({}, 'email');
+        let recipientList = []
+        recipients.map(obj => recipientList.push(obj.email))
+        console.log(recipients);
+        console.log(recipientList);
+
         if (devices.length === 0) {
             console.log("No device found!");
         } else {
@@ -23,6 +29,16 @@ const updateDeviceStatus = async () => {
 
                 device.status = status;
                 device.responseTime = responseTime;
+
+                // check if device is down and was down previously
+                if (status === 'down' && device.status !== 'unknown') {
+                    const subject = device.name + " is DOWN";
+                    const content = `Device ${ device.name } with IP ${ device.ip } is currently down!`;
+                    sendMail(recipientList, subject, content, (error, response) => {
+                        error ? console.log("Error sending email: ", error) : console.log("Email sent successfully:", response);
+                    });
+                }
+
                 await device.save();
                 await History.create({
                     deviceId: device._id,

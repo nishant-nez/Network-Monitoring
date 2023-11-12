@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toast, ToastBox } from "../components/Toast";
 import { AuthContext } from "../contexts/AuthContext";
 import { backend } from '../constants';
 import TestPage from "../components/BackgroundParticles";
@@ -40,30 +40,12 @@ const Login = () => {
             } else {
                 const errMessage = await response.json();
                 console.log(errMessage)
-                toast.error(`Error: ${ errMessage.message }`, {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                Toast('error', errMessage.message);
                 toggleLogout();
             }
         } catch (err) {
             console.log('Error: ', err);
-            toast.error(`Error: ${ err }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            Toast('error', err);
             toggleLogout();
         }
     };
@@ -120,18 +102,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer
-                position="bottom-right"
-                autoClose={ 5000 }
-                hideProgressBar={ false }
-                newestOnTop={ false }
-                closeOnClick
-                rtl={ false }
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
+            <ToastBox />
         </div>
     );
 };

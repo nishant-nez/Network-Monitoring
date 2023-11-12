@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../contexts/AuthContext";
 import { DeviceContext } from '../contexts/DeviceContext';
 import { Spinner } from '@material-tailwind/react';
-import { ToastContainer, toast } from 'react-toastify';
 import ComplexNavbar from '../components/ComplexNavbar';
 import SortableTable from '../components/SortableTable';
 import useFetch from '../hooks/useFetch';
@@ -18,6 +17,7 @@ import {
 import { PencilIcon, UserPlusIcon, PlusIcon, UserIcon } from "@heroicons/react/24/solid";
 // import AddDeviceForm from "../components/AddDeviceForm";
 import Overview from '../components/Overview';
+import { Toast, ToastBox } from "../components/Toast";
 
 
 
@@ -25,57 +25,57 @@ const Home = () => {
     document.title = "Home | Network Monitoring";
     const navigate = useNavigate();
     const { isLoggedin, toggleLogin, toggleLogout } = useContext(AuthContext);
-    const { devices, updateDevices } = useContext(DeviceContext);
+    const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
     // const [data, setData] = useState(null);
-    const { data, isPending, error } = useFetch('/api/devices');
+    // const { data, isPending, error } = useFetch('/api/devices');
     const [open, setOpen] = React.useState(false);
 
     const [isClicked, setIsClicked] = useState(false);
 
     const handleOpen = () => setOpen(!open);
 
-    const fetchData = () => {
-        fetch('/api/devices') // You can use the appropriate URL here
-            .then((res) => {
-                if (res.status === 401) {
-                    // handleOpen();
-                    toggleLogout();
-                    console.log('toggle logout called by HOME ko FETCHDATA')
-                } else if (!res.ok) {
-                    // handleOpen();
-                    throw Error('Could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((newData) => {
-                updateDevices(newData);
-                setIsClicked(!isClicked);
-            })
-            .catch((err) => {
-                // handleOpen();
-                console.error(`Error: ${ err }`);
-                // Handle error
-            });
-    };
+    // const fetchData = () => {
+    //     fetch('/api/devices') // You can use the appropriate URL here
+    //         .then((res) => {
+    //             if (res.status === 401) {
+    //                 // handleOpen();
+    //                 toggleLogout();
+    //                 console.log('toggle logout called by HOME ko FETCHDATA')
+    //             } else if (!res.ok) {
+    //                 // handleOpen();
+    //                 throw Error('Could not fetch the data for that resource');
+    //             }
+    //             return res.json();
+    //         })
+    //         .then((newData) => {
+    //             updateDevices(newData);
+    //             setIsClicked(!isClicked);
+    //         })
+    //         .catch((err) => {
+    //             // handleOpen();
+    //             console.error(`Error: ${ err }`);
+    //             // Handle error
+    //         });
+    // };
 
     // Use setInterval to periodically fetch data
-    useEffect(() => {
-        const intervalId = setInterval(fetchData, 180000); // Fetch data every 5 minutes (300,000 ms)
+    // useEffect(() => {
+    //     const intervalId = setInterval(fetchData, 180000); // Fetch data every 5 minutes (300,000 ms)
 
-        // Clean up the interval on unmount
-        return () => clearInterval(intervalId);
-    }, []);
+    //     // Clean up the interval on unmount
+    //     return () => clearInterval(intervalId);
+    // }, []);
 
     useEffect(() => {
         if (!isLoggedin) {
             navigate("/login");
         }
     }, [isLoggedin, navigate, isClicked]);
-    useEffect(() => {
-        if (data) {
-            updateDevices(data);
-        }
-    }, [data, updateDevices]);
+    // useEffect(() => {
+    //     if (data) {
+    //         updateDevices(data);
+    //     }
+    // }, [data, updateDevices]);
 
     // FORM
     const [name, setName] = useState('');
@@ -117,29 +117,11 @@ const Home = () => {
                 return res.json();
             }).then((data) => {
                 handleOpen();
-                toast.success('Device added!', {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                Toast('success', 'Device Added!');
                 setIsClicked(!isClicked);
             }).catch(err => {
                 handleOpen();
-                toast.error(`Error: ${ err }`, {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                Toast('error', err);
             });
         }
 
@@ -151,18 +133,9 @@ const Home = () => {
 
             { isPending && <div className='flex items-center justify-center z-50'><Spinner /></div> }
 
-            { error && toast.error(`Error: ${ error }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }) }
+            { error && Toast('error', error) }
 
-            { data && <>
+            { devices && <>
                 <div className="mb-8 flex items-center justify-between gap-8">
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
                         <Button className="flex items-center gap-3 text-lg" size="sm" onClick={ handleOpen }>
@@ -171,7 +144,7 @@ const Home = () => {
                     </div>
                 </div>
 
-                <Overview data={ data } />
+                <Overview data={ devices } />
 
                 <div className="main-table mx-14 my-10">
                     <SortableTable filter={ '' } />
@@ -280,18 +253,7 @@ const Home = () => {
                 </Dialog>
             </> }
 
-            <ToastContainer className="z-50"
-                position="bottom-right"
-                autoClose={ 5000 }
-                hideProgressBar={ false }
-                newestOnTop={ false }
-                closeOnClick
-                rtl={ false }
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
+            <ToastBox />
         </div>
     );
 }

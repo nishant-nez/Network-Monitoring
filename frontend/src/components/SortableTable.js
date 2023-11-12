@@ -50,8 +50,8 @@ const TimeAgoNoSuffix = (date) => {
 
 export default function SortableTable(props) {
     const [selectedTab, setSelectedTab] = useState('all');
-    const { devices } = useContext(DeviceContext);
-    const [data, setData] = useState([]);
+    const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
+    const [data, setData] = useState(devices);
     const TABLE_ROWS = [];
 
     // Use useEffect to update data when the selected tab or devices change
@@ -266,19 +266,6 @@ export default function SortableTable(props) {
                             </tbody>
                         </table>
                     </CardBody>
-                    {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                <Typography variant="small" color="blue-gray" className="font-normal">
-                    Page 1 of 10
-                </Typography>
-                <div className="flex gap-2">
-                    <Button variant="outlined" size="sm">
-                        Previous
-                    </Button>
-                    <Button variant="outlined" size="sm">
-                        Next
-                    </Button>
-                </div>
-            </CardFooter> */}
                 </>
             }
         </Card>

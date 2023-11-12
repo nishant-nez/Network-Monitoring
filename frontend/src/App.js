@@ -12,6 +12,7 @@ import Domain from './pages/Domain';
 import NotFound from './pages/NotFound';
 import DeviceDetails from './pages/DeviceDetails';
 import Profile from './pages/Profile'
+import EmailContextProvider from './contexts/EmailContext';
 // import DeviceDetails from './pages/TestPage';
 // 
 
@@ -20,52 +21,54 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <DeviceContextProvider>
-          <Routes>
-            <Route
-              exact
-              path="/"
-              element={ <Home /> }
-            />
-            <Route
-              exact
-              path="/login"
-              element={ <Login /> }
-            />
-            <Route
-              exact
-              path="/switch"
-              element={ <Switch /> }
-            />
-            <Route
-              exact
-              path="/ap"
-              element={ <AP /> }
-            />
-            <Route
-              exact
-              path="/other"
-              element={ <Other /> }
-            />
-            <Route
-              exact
-              path="/device/:id"
-              element={ <DeviceDetails /> }
-            />
-            <Route
-              exact
-              path="/domain"
-              element={ <Domain /> }
-            />
-            <Route
-              exact
-              path="/profile"
-              element={ <Profile /> }
-            />
-            <Route
-              path="*"
-              element={ <NotFound /> }
-            />
-          </Routes>
+          <EmailContextProvider>
+            <Routes>
+              <Route
+                exact
+                path="/"
+                element={ <Home /> }
+              />
+              <Route
+                exact
+                path="/login"
+                element={ <Login /> }
+              />
+              <Route
+                exact
+                path="/switch"
+                element={ <Switch /> }
+              />
+              <Route
+                exact
+                path="/ap"
+                element={ <AP /> }
+              />
+              <Route
+                exact
+                path="/other"
+                element={ <Other /> }
+              />
+              <Route
+                exact
+                path="/device/:id"
+                element={ <DeviceDetails /> }
+              />
+              <Route
+                exact
+                path="/domain"
+                element={ <Domain /> }
+              />
+              <Route
+                exact
+                path="/profile"
+                element={ <Profile /> }
+              />
+              <Route
+                path="*"
+                element={ <NotFound /> }
+              />
+            </Routes>
+          </EmailContextProvider>
         </DeviceContextProvider>
       </BrowserRouter>
     </div>

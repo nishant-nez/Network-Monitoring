@@ -1,4 +1,8 @@
 import ComplexNavbar from "../components/ComplexNavbar";
+import { Toast, ToastBox } from "../components/Toast";
+import { backend } from '../constants';
+import { AuthContext } from "../contexts/AuthContext";
+import { EmailContext } from "../contexts/EmailContext";
 import {
     Typography,
     List,
@@ -6,11 +10,18 @@ import {
     ListItemSuffix,
     Card,
     IconButton,
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    DialogFooter,
     Button,
+    Spinner,
 } from "@material-tailwind/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import useFetch from "../hooks/useFetch";
+
+
 
 function TrashIcon() {
     return (
@@ -29,107 +40,200 @@ function TrashIcon() {
     );
 }
 
+
 const Profile = () => {
     const { data: userData, isPending: useIsPending, error: useError } = useFetch('/api/users/current');
-    const { data: emailData, isPending: emailIsPending, error: emailError } = useFetch('/api/recipients');
+    // let { data: emailData, isPending: emailIsPending, error: emailError } = useFetch('/api/recipients');
+    const { emailList, updateEmail, isPending: emailIsPending, error: emailError } = useContext(EmailContext);
+
+    const [addPending, setAddPending] = useState(false);
+    const [isClicked, setIsClicked] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [email, setEmail] = useState('');
+    const [description, setDescription] = useState('');
+    const { toggleLogout } = useContext(AuthContext);
+
+    const handleOpen = () => setOpen(!open);
+
+    const [token, setToken] = useState(() => {
+        const storedToken = localStorage.getItem('user');
+        return storedToken ? JSON.parse(storedToken) : null;
+    });
+
+    const handleDelete = (id) => {
+        console.log(id);
+        fetch(backend + '/api/recipients/' + id, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${ token }`,
+                'Content-Type': 'application/json',
+            }
+        }).then(res => {
+            if (res.status === 401) {
+                toggleLogout();
+            } else if (!res.ok) {
+                throw Error('Could not delete email');
+            }
+            return res.json();
+        }).then((data) => {
+            Toast('success', 'Email Deleted!');
+            updateEmail();
+            setIsClicked(!isClicked);
+        }).catch(err => {
+            Toast('error', err);
+        });
+    }
+
+    const handleAdd = (e) => {
+        e.preventDefault();
+        setAddPending(true);
+        const recipient = { email, description };
+        if (email) {
+            fetch(backend + '/api/recipients/', {
+                method: 'POST',
+                body: JSON.stringify(recipient),
+                headers: {
+                    Authorization: `Bearer ${ token }`,
+                    'Content-Type': 'application/json',
+                }
+            }).then(res => {
+                if (res.status === 401) {
+                    handleOpen();
+                    toggleLogout();
+                } else if (!res.ok) {
+                    handleOpen();
+                    throw Error('Could not fetch the data for that resource');
+                }
+                setAddPending(false);
+                return res.json();
+            }).then((data) => {
+                handleOpen();
+                Toast('success', 'Email Added!');
+                setIsClicked(!isClicked);
+                setEmail('');
+                setDescription('');
+                updateEmail();
+                setAddPending(false);
+            }).catch(err => {
+                handleOpen();
+                Toast('error', err);
+                setEmail('');
+                setDescription('');
+                setAddPending(false);
+            });
+        }
+    }
 
     return (
         <>
             <ComplexNavbar />
-            <div>
-                <div class="p-16 pt-6">
-                    <div class="p-8 bg-white shadow mt-24 rounded-lg">
-                        <div class="grid grid-cols-1 md:grid-cols-3">
-                            <div class="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
-                                <div>
-                                    <p class="font-bold text-gray-700 text-xl">22</p>
-                                    <p class="text-gray-400">Friends</p>
+            { useIsPending && emailIsPending && <Spinner /> }
+            { userData && emailList &&
+                <>
+                    <div className="container mx-auto my-32">
+                        <div>
+                            { console.log('emaillist: ') }
+                            { console.log(emailList) }
+                            <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
+                                <div className="flex justify-center">
+                                    <img src={ process.env.PUBLIC_URL + '/deerwalk-logo.png' } alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110" />
                                 </div>
-                                <div>
-                                    <p class="font-bold text-gray-700 text-xl">10</p>
-                                    <p class="text-gray-400">Photos</p>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-gray-700 text-xl">89</p>
-                                    <p class="text-gray-400">Comments</p>
+
+                                <div className="mt-16">
+                                    <h1 className="font-bold text-center text-3xl text-gray-900">{ userData.username }</h1>
+                                    {/* <p className="text-center text-sm text-gray-400 font-medium">UI Components Factory</p> */ }
+                                    <div className="my-5 px-6">
+                                        <a href="/profile" className="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
+                                            Button?
+                                        </a>
+                                    </div>
+                                    <div className="flex justify-between items-center my-5 px-6">
+                                    </div>
+                                    <hr className="my-6 mx-4" />
+                                    <div className="w-full">
+                                        <div className="flex items-center justify-between px-6">
+                                            <h3 className="font-semibold text-lg text-gray-900 text-left">Email Recipients</h3>
+                                            <Button onClick={ handleOpen }>Add Recipient</Button>
+                                        </div>
+                                        <div className="mt-5 w-full flex flex-col items-center overflow-hidden text-base">
+                                            { emailList.map(obj => {
+                                                return (
+                                                    <div
+                                                        className="flex justify-between items-center w-full border border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 overflow-hidden"
+                                                        key={ obj._id }>
+                                                        <div>
+                                                            { obj.email }
+                                                        </div>
+                                                        <div onClick={ () => handleDelete(obj._id) } className="cursor-pointer mx-4">
+                                                            <TrashIcon />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }) }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="relative">
-                                <div class="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                                    {/* <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                                    </svg> */}
-                                    <img src={ process.env.PUBLIC_URL + '/deerwalk-logo.png' } alt="profile logo" className="w-48 h-48 rounded-full" />
-                                </div>
-                            </div>
-
-                            <div class="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-                                <button
-                                    class="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                                >
-                                    Connect
-                                </button>
-                                <button
-                                    class="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                                >
-                                    Message
-                                </button>
-                            </div>
                         </div>
-
-                        <div class="mt-20 text-center border-b pb-12">
-                            <h1 class="text-4xl font-medium text-gray-700">Jessica Jones, <span class="font-light text-gray-500">27</span></h1>
-                            <p class="font-light text-gray-600 mt-3">Bucharest, Romania</p>
-
-                            <p class="mt-8 text-gray-500">Solution Manager - Creative Tim Officer</p>
-                            <p class="mt-2 text-gray-500">University of Computer Science</p>
-                        </div>
-
-                        <div class="mt-12 flex flex-col justify-center">
-                            <Typography variant="h5">
-                                Email Recipients
-                            </Typography>
-
-
-                            <Card className="w-96">
-                                <List>
-                                    <ListItem ripple={ true } className="py-1 pr-1 pl-4">
-                                        Item One
-                                        <ListItemSuffix>
-                                            <IconButton variant="text" color="blue-gray">
-                                                <TrashIcon />
-                                            </IconButton>
-                                        </ListItemSuffix>
-                                    </ListItem>
-                                    <ListItem ripple={ true } className="py-1 pr-1 pl-4">
-                                        Item Two
-                                        <ListItemSuffix>
-                                            <IconButton variant="text" color="blue-gray">
-                                                <TrashIcon />
-                                            </IconButton>
-                                        </ListItemSuffix>
-                                    </ListItem>
-                                    <ListItem ripple={ true } className="py-1 pr-1 pl-4">
-                                        Item Three
-                                        <ListItemSuffix>
-                                            <IconButton variant="text" color="blue-gray">
-                                                <TrashIcon />
-                                            </IconButton>
-                                        </ListItemSuffix>
-                                    </ListItem>
-                                    <ListItem ripple={ false } className="py-2 pr-1 pl-4">
-                                        <ListItemSuffix>
-                                            <Button className="w-36 ml-[-130px] py-4">Add Recipient</Button>
-                                        </ListItemSuffix>
-                                    </ListItem>
-                                </List>
-                            </Card>
-
-                        </div>
-
                     </div>
-                </div>
-            </div>
+                    {/* FORM */ }
+                    <Dialog open={ open } handler={ handleOpen }>
+                        <DialogHeader>Add a New Recipient!</DialogHeader>
+                        <DialogBody>
+                            <form className="bg-white px-8 pt-6 pb-8 mb-4" onSubmit={ handleAdd }>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                                        Email <span className="text-red-400">*</span>
+                                    </label>
+                                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="email"
+                                        type="email"
+                                        required
+                                        value={ email }
+                                        onChange={ (e) => setEmail(e.target.value) }
+                                        placeholder="example@email.com" />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                                        Description
+                                    </label>
+                                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="description"
+                                        type="text"
+                                        value={ description }
+                                        onChange={ (e) => setDescription(e.target.value) }
+                                        placeholder="Description" />
+                                </div>
+
+                                <div className="flex items-center justify-center mx-4">
+                                    {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                                Add Device
+                            </button> */}
+                                    { !addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" type='submit'>
+                                        Add Recipient
+                                    </Button> }
+                                    { addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" disabled size="sm" type='submit'>
+                                        Add Recipient
+                                    </Button> }
+                                </div>
+                            </form>
+                        </DialogBody>
+                        <DialogFooter>
+                            <Button
+                                variant="text"
+                                color="red"
+                                onClick={ handleOpen }
+                                className="mr-1"
+                            >
+                                <span>Cancel</span>
+                            </Button>
+                        </DialogFooter>
+                    </Dialog>
+                </>
+
+
+            }
+            <ToastBox />
         </>
     );
 }

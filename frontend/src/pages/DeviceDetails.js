@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { ToastContainer, toast } from 'react-toastify';
+import { Toast, ToastBox } from "../components/Toast";
 import useFetch from "../hooks/useFetch";
 import ComplexNavbar from "../components/ComplexNavbar";
 import { Spinner } from '@material-tailwind/react';
@@ -136,30 +136,12 @@ const DeviceDetails = () => {
             return res.json();
         }).then((data) => {
             handleOpen();
-            toast.success('Device Deleted!', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            Toast('success', 'Device Deleted!')
             navigate('/');
             setIsClicked(!isClicked);
         }).catch(err => {
             handleOpen();
-            toast.error(`Error: ${ err }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            Toast('error', err)
         });
     }
 
@@ -190,29 +172,11 @@ const DeviceDetails = () => {
             return res.json();
         }).then((data) => {
             handleOpen();
-            toast.success('Device Updated!', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            Toast('success', 'Device Updated!')
             setIsClicked(!isClicked);
         }).catch(err => {
             handleOpen();
-            toast.error(`Error: ${ err }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            Toast('error', err)
         });
 
     };
@@ -224,26 +188,8 @@ const DeviceDetails = () => {
             <ComplexNavbar />
             { isPending && historyIsPending && <Spinner /> }
 
-            { error && toast.error(`Error: ${ error }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }) }
-            { historyError && toast.error(`Error: ${ historyError }`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            }) }
+            { error && Toast('error', error) }
+            { historyError && Toast('error', historyError) }
 
             { data && historyData &&
                 <>
@@ -433,18 +379,7 @@ const DeviceDetails = () => {
                 </>
             }
 
-            <ToastContainer className="z-50"
-                position="bottom-right"
-                autoClose={ 5000 }
-                hideProgressBar={ false }
-                newestOnTop={ false }
-                closeOnClick
-                rtl={ false }
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
+            <ToastBox />
         </>
     );
 }

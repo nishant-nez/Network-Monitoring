@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { Toast, ToastBox } from "../components/Toast";
+import NotificationTable from "../components/NotificationTable";
 import useFetch from "../hooks/useFetch";
 import ComplexNavbar from "../components/ComplexNavbar";
 import { Spinner } from '@material-tailwind/react';
@@ -16,6 +17,7 @@ import {
     DialogHeader,
     DialogBody,
     DialogFooter,
+    Tooltip,
 } from "@material-tailwind/react";
 import { PencilIcon, UserPlusIcon, PlusIcon, UserIcon } from "@heroicons/react/24/solid";
 
@@ -28,6 +30,7 @@ const DeviceDetails = () => {
 
     const [groupedData, setGroupedData] = useState({});
     const [dailyResponse, setDailyResponse] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const [downs, setDowns] = useState(0);
 
     // FORM
@@ -46,6 +49,7 @@ const DeviceDetails = () => {
 
     const { isLoggedin, toggleLogin, toggleLogout } = useContext(AuthContext);
     const { data, isPending, error } = useFetch('/api/devices/' + id);
+    const { data: notificationsData, isPending: notificationIsPending, error: notificationsError } = useFetch('/api/notification/' + id);
     const { data: historyData, isPending: historyIsPending, error: historyError } = useFetch('/api/history/' + id);
 
     useEffect(() => {
@@ -106,7 +110,14 @@ const DeviceDetails = () => {
             });
             setDowns(count);
         }
-    }, [historyData, data]);
+
+        if (notificationsData) {
+            setNotifications(notificationsData);
+            console.log('notifications from effect$%: ', notifications);
+        }
+        console.log('notifications from effect: ', notifications);
+        console.log('notificationdata: ', notificationsData);
+    }, [historyData, data, notificationsData]);
 
 
     // FORM
@@ -195,15 +206,32 @@ const DeviceDetails = () => {
                 <>
                     {/* Grid Start */ }
                     <div className="grid grid-cols-1 gap-10 mx-14 my-10 md:grid-cols-2">
-                        <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
-                            <LineChart data={ dailyResponse } />
-                        </div>
-                        <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
-                            <PieChart data={ { downs: downs, total: historyData.length } } />
-                        </div>
+                        <Tooltip
+                            content="Line Chart for Average Response Time"
+                            animate={ {
+                                mount: { scale: 1, y: 0 },
+                                unmount: { scale: 0, y: 25 },
+                            } }
+                        >
+                            <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
+                                <LineChart data={ dailyResponse } />
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            content="Pie Chart for Uptime and Downtime"
+                            animate={ {
+                                mount: { scale: 1, y: 0 },
+                                unmount: { scale: 0, y: 25 },
+                            } }
+                        >
+                            <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
+                                <PieChart data={ { downs: downs, total: historyData.length } } />
+                            </div>
+                        </Tooltip>
+
                         <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
                             <div className="p-6 w-[90%]">
-                                <Typography variant="h5" color="blue-gray" className="mb-4">
+                                <Typography variant="h4" color="blue-gray" className="mb-4 border-b-2 text-center">
                                     Device Details
                                 </Typography>
                                 <Typography variant="h5" color="blue-gray" className="mb-2">
@@ -242,13 +270,33 @@ const DeviceDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
-                            <div className="flex justify-center items-center h-full">
-                                <Typography variant="small" color="blue-gray" className="text-center">
-                                    No recent notifications.
-                                </Typography>
+                        <Tooltip
+                            content="Recent Email Notifications Sent"
+                            animate={ {
+                                mount: { scale: 1, y: 0 },
+                                unmount: { scale: 0, y: 25 },
+                            } }
+                        >
+                            <div>
+                                { notificationIsPending && <Spinner /> }
+                                { console.log('notifications: ', notifications) }
+                                { (!notifications || notifications.length === 0) &&
+                                    <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg h-full">
+                                        <div className="flex justify-center items-center h-full">
+                                            <Typography variant="small" color="blue-gray" className="text-center">
+                                                No recent notifications.
+                                            </Typography>
+                                        </div>
+                                    </div>
+                                }
+                                {/* <NotificationTable /> */ }
+                                { notifications && notifications.length > 0 &&
+                                    <div className=" ">
+                                        <NotificationTable data={ notifications } />
+                                    </div>
+                                }
                             </div>
-                        </div>
+                        </Tooltip>
                     </div>
                     {/* Grid End */ }
 
@@ -369,13 +417,13 @@ const DeviceDetails = () => {
                         </div>
                     </div>
 
-                    <div className="content">
+                    {/* <div className="content">
                         { console.log('history:\n', historyData) }
                         { console.log('data:\n', data) }
                         { console.log('GROUPED DATA:\n', groupedData) }
                         { console.log('DAILY RESPONSE:\n', dailyResponse) }
 
-                    </div>
+                    </div> */}
                 </>
             }
 

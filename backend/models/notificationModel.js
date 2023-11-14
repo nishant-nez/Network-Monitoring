@@ -19,4 +19,4 @@ const notificationSchema = mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('History', notificationSchema);
+module.exports = mongoose.model('Notification', notificationSchema);

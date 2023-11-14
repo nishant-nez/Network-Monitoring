@@ -22,6 +22,7 @@ app.use('/api/devices', require("./routes/deviceRoute"));
 app.use('/api/recipitents', require("./routes/emailRecipientRoute"));
 app.use('/api/history', require("./routes/historyRoute"));
 app.use('/api/recipients', require("./routes/emailRecipientRoute"));
+app.use('/api/notification', require("./routes/notificationRoute"));
 
 // middlewares
 app.use(errorHandler);

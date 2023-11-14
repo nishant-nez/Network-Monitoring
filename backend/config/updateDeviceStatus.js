@@ -2,6 +2,7 @@ const ping = require("ping");
 const Device = require("../models/deviceModel");
 const History = require("../models/historyModel");
 const emailRecipient = require("../models/emailRecipientModel");
+const Notification = require("../models/notificationModel");
 
 const sendMail = require("./sendMail");
 
@@ -34,8 +35,17 @@ const updateDeviceStatus = async () => {
                 if (status === 'down' && device.status !== 'unknown') {
                     const subject = device.name + " is DOWN";
                     const content = `Device ${ device.name } with IP ${ device.ip } is currently down!`;
-                    sendMail(recipientList, subject, content, (error, response) => {
-                        error ? console.log("Error sending email: ", error) : console.log("Email sent successfully:", response);
+                    sendMail(recipientList, subject, content, async (error, response) => {
+                        if (error) {
+                            console.log("Error sending email: ", error);
+                        } else {
+                            console.log("Email sent successfully: ", response);
+                            await Notification.create({
+                                deviceId: device._id,
+                                recipients: recipientList,
+                                content: content,
+                            });
+                        }
                     });
                 }
 

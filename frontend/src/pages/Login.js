@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Toast, ToastBox } from "../components/Toast";
 import { AuthContext } from "../contexts/AuthContext";
 import { backend } from '../constants';
-import TestPage from "../components/BackgroundParticles";
+import BackgroundParticles from "../components/BackgroundParticles";
 
 const Login = () => {
     document.title = "Login | Network Monitoring";
@@ -61,11 +61,12 @@ const Login = () => {
         <div className="main-content">
             { isLoggedin && navigate("/") }
             {/* <TestPage /> */ }
+            <BackgroundParticles />
             <div className="min-w-full min-h-[100vh] flex justify-center items-center bg-gray-200">
                 <div className="login-box rounded-lg bg-gray-100 shadow-lg hover:shadow-xl z-50">
                     <div className="login-items w-full">
-                        <div className="relative w-[670px] h-[179px] rounded-tl-lg rounded-tr-lg bg-[url('https://colorlib.com/etc/lf/Login_v15/images/bg-01.jpg')]">
-                            <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-70 rounded-tl-lg rounded-tr-lg">
+                        <div className="relative w-[670px] h-[179px] rounded-tl-lg rounded-tr-lg bg-[url('https://img.freepik.com/premium-photo/abstract-technological-dark-background_763713-3931.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699747200&semt=ais')]">
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 rounded-tl-lg rounded-tr-lg">
                                 <span className="text-white text-3xl font-bold text-center">SIGN IN</span>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ const PieChart = ({ data }) => {
     // const responseTimes = data.map(entry => entry.averageResponse);
 
     const chartData = {
-        labels: ['Up Times', 'Down Times'],
+        labels: ['Uptime', 'Downtime'],
         datasets: [
             {
                 data: [upVolume, downVolume],

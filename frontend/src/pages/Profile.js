@@ -42,6 +42,7 @@ function TrashIcon() {
 
 
 const Profile = () => {
+    document.title = "Profile | Network Monitoring";
     const { data: userData, isPending: useIsPending, error: useError } = useFetch('/api/users/current');
     // let { data: emailData, isPending: emailIsPending, error: emailError } = useFetch('/api/recipients');
     const { emailList, updateEmail, isPending: emailIsPending, error: emailError } = useContext(EmailContext);

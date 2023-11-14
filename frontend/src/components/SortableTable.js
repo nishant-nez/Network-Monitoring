@@ -51,7 +51,9 @@ const TimeAgoNoSuffix = (date) => {
 export default function SortableTable(props) {
     const [selectedTab, setSelectedTab] = useState('all');
     const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
+    // console.log('devices: ' + devices)
     const [data, setData] = useState(devices);
+    // console.log('data: ' + data)
     const TABLE_ROWS = [];
 
     // Use useEffect to update data when the selected tab or devices change
@@ -75,11 +77,12 @@ export default function SortableTable(props) {
 
             // Set the filtered data to state
             setData(filteredData);
+            console.log('devices: ', devices)
             // console.log('CURRENT DATA : ', )
         }
     }, [selectedTab, devices, props.filter]);
 
-    if (data) {
+    if (data && data.title !== 'Unauthorized') {
         data.map((item) => {
             TABLE_ROWS.push({
                 id: item._id,

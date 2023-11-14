@@ -10,6 +10,7 @@ services:
       - mongo # Assuming you have a MongoDB container
     volumes:
       - backend-data:/backend/data
+      - ./backend:/app
 
   frontend:
     build:
@@ -17,6 +18,8 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3003:3003" # Map container port to host port
+    volumes:
+      - ./frontend:/app
 
   mongo:
     image: mongo:latest # Use the official MongoDB image

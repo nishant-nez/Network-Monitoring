@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import { backend } from '../constants';
 
 export const DeviceContext = createContext();
@@ -12,27 +13,35 @@ const DeviceContextProvider = (props) => {
     const [devices, setDevices] = useState([]);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
+    const { toggleLogout } = useContext(AuthContext);
 
     const updateDevices = async () => {
-        try {
-            setIsPending(true);
-
-            const response = await fetch(backend + '/api/devices', {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${ token }`,
-                    'Content-Type': 'application/json',
-                }
-            });
-            const data = await response.json();
-
+        setIsPending(true);
+        fetch(backend + '/api/devices', {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${ token }`,
+                'Content-Type': 'application/json',
+            }
+        }).then(res => {
+            if (res.status === 401) {
+                toggleLogout();
+            } else if (!res.ok) {
+                console.log('status: ')
+                console.log(res.status);
+                throw Error('Could not fetch the data for that resource');
+            }
+            return res.json();
+        }).then((data) => {
+            console.log('data from use Fetch: ', data);
             setDevices(data);
-
             setIsPending(false);
-        } catch (error) {
-            setError(error);
+            setError(null);
+        }).catch((err) => {
+            console.log('inside error: ', err)
             setIsPending(false);
-        }
+            setError(err.message);
+        })
     }
 
     useEffect(() => {

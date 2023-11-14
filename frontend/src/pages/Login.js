@@ -5,6 +5,7 @@ import { Toast, ToastBox } from "../components/Toast";
 import { AuthContext } from "../contexts/AuthContext";
 import { backend } from '../constants';
 import BackgroundParticles from "../components/BackgroundParticles";
+import Footer from "../components/Footer";
 
 const Login = () => {
     document.title = "Login | Network Monitoring";
@@ -67,7 +68,7 @@ const Login = () => {
                     <div className="login-items w-full">
                         <div className="relative w-[670px] h-[179px] rounded-tl-lg rounded-tr-lg bg-[url('https://img.freepik.com/premium-photo/abstract-technological-dark-background_763713-3931.jpg?size=626&ext=jpg&ga=GA1.1.1826414947.1699747200&semt=ais')]">
                             <div className="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-30 rounded-tl-lg rounded-tr-lg">
-                                <span className="text-white text-3xl font-bold text-center">SIGN IN</span>
+                                <span className="text-white text-3xl font-bold text-center">SIGN IN <br />Network Monitor</span>
                             </div>
                         </div>
                         {/* begin */ }
@@ -103,6 +104,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
             <ToastBox />
         </div>
     );

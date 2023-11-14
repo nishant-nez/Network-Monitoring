@@ -291,7 +291,7 @@ const DeviceDetails = () => {
                                 }
                                 {/* <NotificationTable /> */ }
                                 { notifications && notifications.length > 0 &&
-                                    <div className=" ">
+                                    <div className="bg-white rounded-lg hover:shadow-lg">
                                         <NotificationTable data={ notifications } />
                                     </div>
                                 }

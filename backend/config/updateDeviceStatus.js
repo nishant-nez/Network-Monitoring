@@ -21,7 +21,8 @@ const updateDeviceStatus = async () => {
             console.log("No device found!");
         } else {
             for (const device of devices) {
-                const result = await ping.promise.probe(device.ip);
+                const filteredIP = device.ip.replace(/^(https?:\/\/)?(.+?)\/?$/, '$2');
+                const result = await ping.promise.probe(filteredIP);
                 const status = result.alive ? 'up' : 'down';
                 let responseTime = -1;
                 if (result.alive) {
@@ -32,7 +33,7 @@ const updateDeviceStatus = async () => {
                 device.responseTime = responseTime;
 
                 // check if device is down and was down previously
-                if (status === 'down' && device.status !== 'unknown') {
+                if (status === 'down' && device.status !== 'unknown' && recipientList.length > 0) {
                     const subject = device.name + " is DOWN";
                     const content = `Device ${ device.name } with IP ${ device.ip } is currently down!`;
                     sendMail(recipientList, subject, content, async (error, response) => {

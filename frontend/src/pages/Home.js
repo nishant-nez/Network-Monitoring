@@ -67,6 +67,7 @@ const Home = () => {
     // }, []);
 
     useEffect(() => {
+        // updateDevices();
         if (!isLoggedin) {
             navigate("/login");
         }
@@ -78,6 +79,7 @@ const Home = () => {
     // }, [data, updateDevices]);
 
     // FORM
+    const [addPending, setAddPending] = useState(false);
     const [name, setName] = useState('');
     const [type, setType] = useState('Switch');
     const [ip, setIP] = useState('');
@@ -96,6 +98,7 @@ const Home = () => {
         console.log(device);
 
         if (name && type && ip && location) {
+            setAddPending(true);
             fetch(backend + '/api/devices', {
                 method: 'POST',
                 body: JSON.stringify(device),
@@ -106,10 +109,12 @@ const Home = () => {
             }).then(res => {
                 if (res.status === 401) {
                     handleOpen();
+                    setAddPending(false);
                     toggleLogout();
                     console.log('toggle logout called by HOME LINE 110')
                 } else if (!res.ok) {
                     handleOpen();
+                    setAddPending(false);
                     console.log('status: ')
                     console.log(res.status);
                     throw Error('Could not fetch the data for that resource');
@@ -117,6 +122,12 @@ const Home = () => {
                 return res.json();
             }).then((data) => {
                 handleOpen();
+                setAddPending(false);
+                setName('');
+                setIP();
+                setLocation('');
+                setDescription('');
+                updateDevices();
                 Toast('success', 'Device Added!');
                 setIsClicked(!isClicked);
             }).catch(err => {
@@ -131,20 +142,21 @@ const Home = () => {
         <div className="home">
             <ComplexNavbar />
 
-            { isPending && <div className='flex items-center justify-center z-50'><Spinner /></div> }
+            {/* { isPending && <div className='flex items-center justify-center z-50'><Spinner /></div> } */ }
 
-            { error && Toast('error', error) }
+            {/* { error && Toast('error', error) } */ }
 
-            { devices && <>
+            { <>
+                {/* { devices.length === 0 && navigate('/') } */ }
                 <div className="mb-8 flex items-center justify-between gap-8">
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
-                        <Button className="flex items-center gap-3 text-lg" size="sm" onClick={ handleOpen }>
-                            <PlusIcon strokeWidth={ 2 } className="h-4 w-4" /> Add Device
+                        <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
+                            <PlusIcon strokeWidth={ 4 } className="h-6 w-6" /> Add Device
                         </Button>
                     </div>
                 </div>
 
-                <Overview data={ devices } />
+                <Overview />
 
                 <div className="main-table mx-14 my-10">
                     <SortableTable filter={ '' } />
@@ -231,10 +243,10 @@ const Home = () => {
                                 {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                                 Add Device
                             </button> */}
-                                { !isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit'>
+                                { !addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit'>
                                     Add Device
                                 </Button> }
-                                { isPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit'>
+                                { addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" onClick={ handleSubmit } type='submit' disabled>
                                     Add Device
                                 </Button> }
                             </div>

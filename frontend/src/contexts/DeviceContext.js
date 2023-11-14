@@ -11,7 +11,7 @@ const DeviceContextProvider = (props) => {
     });
 
     const [devices, setDevices] = useState([]);
-    const [isPending, setIsPending] = useState(true);
+    const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState(null);
     const { toggleLogout } = useContext(AuthContext);
 
@@ -26,9 +26,11 @@ const DeviceContextProvider = (props) => {
         }).then(res => {
             if (res.status === 401) {
                 toggleLogout();
+                setIsPending(false);
             } else if (!res.ok) {
                 console.log('status: ')
                 console.log(res.status);
+                setIsPending(false);
                 throw Error('Could not fetch the data for that resource');
             }
             return res.json();
@@ -41,7 +43,7 @@ const DeviceContextProvider = (props) => {
             console.log('inside error: ', err)
             setIsPending(false);
             setError(err.message);
-        })
+        });
     }
 
     useEffect(() => {

@@ -3,6 +3,7 @@ import { Toast, ToastBox } from "../components/Toast";
 import { backend } from '../constants';
 import { AuthContext } from "../contexts/AuthContext";
 import { EmailContext } from "../contexts/EmailContext";
+import { redirect, useNavigate } from 'react-router-dom';
 import {
     Typography,
     List,
@@ -47,12 +48,14 @@ const Profile = () => {
     // let { data: emailData, isPending: emailIsPending, error: emailError } = useFetch('/api/recipients');
     const { emailList, updateEmail, isPending: emailIsPending, error: emailError } = useContext(EmailContext);
 
+    const navigate = useNavigate();
+
     const [addPending, setAddPending] = useState(false);
     const [isClicked, setIsClicked] = useState(true);
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
-    const { toggleLogout } = useContext(AuthContext);
+    const { toggleLogin, isLoggedin, toggleLogout } = useContext(AuthContext);
 
     const handleOpen = () => setOpen(!open);
 
@@ -60,6 +63,12 @@ const Profile = () => {
         const storedToken = localStorage.getItem('user');
         return storedToken ? JSON.parse(storedToken) : null;
     });
+
+    useEffect(() => {
+        if (!isLoggedin) {
+            redirect('/login');
+        }
+    }, [isLoggedin]);
 
     const handleDelete = (id) => {
         console.log(id);
@@ -127,6 +136,7 @@ const Profile = () => {
 
     return (
         <>
+            { !isLoggedin && navigate('/login') }
             <ComplexNavbar />
             { useIsPending && emailIsPending && <Spinner /> }
             { userData && emailList &&
@@ -157,7 +167,7 @@ const Profile = () => {
                                             <Button onClick={ handleOpen }>Add Recipient</Button>
                                         </div>
                                         <div className="mt-5 w-full flex flex-col items-center overflow-hidden text-base">
-                                            { emailList.map(obj => {
+                                            { Array.isArray(emailList) && emailList.map(obj => {
                                                 return (
                                                     <div
                                                         className="flex justify-between items-center w-full border border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 overflow-hidden"

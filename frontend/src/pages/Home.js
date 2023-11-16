@@ -11,11 +11,13 @@ import {
     Dialog,
     DialogHeader,
     DialogFooter,
+    Spinner,
 } from "@material-tailwind/react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 // import AddDeviceForm from "../components/AddDeviceForm";
 import Overview from '../components/Overview';
 import { Toast, ToastBox } from "../components/Toast";
+import OverviewCards from '../components/OverviewCards';
 
 
 
@@ -112,9 +114,9 @@ const Home = () => {
             { !isLoggedin && navigate("/login") }
             <ComplexNavbar />
 
-            {/* { isPending && <div className='flex items-center justify-center z-50'><Spinner /></div> } */ }
+            { isPending && <Spinner /> }
 
-            {/* { error && Toast('error', error) } */ }
+            { error && Toast('error', error) }
 
             { <>
                 {/* { devices.length === 0 && navigate('/') } */ }
@@ -126,7 +128,10 @@ const Home = () => {
                     </div>
                 </div>
 
-                <Overview />
+                {/* TEST CARDS */ }
+                <OverviewCards />
+
+                {/* <Overview /> */ }
 
                 <div className="main-table mx-14 my-10">
                     <SortableTable filter={ '' } />

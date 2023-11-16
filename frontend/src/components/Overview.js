@@ -42,29 +42,6 @@ const Overview = () => {
         }
     }, [data]);
 
-    // const cards = [
-    //     {
-    //         title: 'Switches',
-    //         count: data.filter(device => device.type === 'Switch').length,
-    //         icon: './switch.png',
-    //     },
-    //     {
-    //         title: 'APs',
-    //         count: data.filter(device => device.type === 'Access Point').length,
-    //         icon: './ap.png',
-    //     },
-    //     {
-    //         title: 'Domains',
-    //         count: data.filter(device => device.type === 'Domain').length,
-    //         icon: './globe.png',
-    //     },
-    //     {
-    //         title: 'Other',
-    //         count: data.filter(device => !['Switch', 'Access Point', 'Domain'].includes(device.type)).length,
-    //         icon: './computer.png',
-    //     }
-    // ];
-
     return (
         <div className="overview mx-14 bg-white rounded-lg shadow-lg p-10">
             <Typography as={ 'div' }>

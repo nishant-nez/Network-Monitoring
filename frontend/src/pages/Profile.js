@@ -130,7 +130,7 @@ const Profile = () => {
         <>
             { !isLoggedin && navigate('/login') && console.log("-------------navigate to /login called by profile line 142") }
             <ComplexNavbar />
-            { useIsPending && emailIsPending && <Spinner /> }
+            { (useIsPending || emailIsPending) && <Spinner className="h-12 w-12" /> }
             { userData && emailList &&
                 <>
                     <div className="container mx-auto my-32">

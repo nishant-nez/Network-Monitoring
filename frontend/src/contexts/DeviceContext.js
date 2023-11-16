@@ -63,7 +63,7 @@ const DeviceContextProvider = (props) => {
     }, [isLoggedin]);
 
     return (
-        <DeviceContext.Provider value={ { devices, updateDevices, isPending, error } }>
+        <DeviceContext.Provider value={ { devices: devices, updateDevices: updateDevices, isPending: isPending, error: error } }>
             { props.children }
         </DeviceContext.Provider>
     );

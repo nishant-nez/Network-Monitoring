@@ -1,9 +1,10 @@
-import React from "react";
+import { useEffect } from "react";
 import { Tooltip } from "@material-tailwind/react";
 import LineChart from "./LineChart";
 import PieChart from "./PieChart";
 
 const DeviceDetailsCharts = ({ dailyResponse, downs, historyData }) => {
+    useEffect(() => { }, [dailyResponse]);
     return (
         <>
             <Tooltip
@@ -15,6 +16,7 @@ const DeviceDetailsCharts = ({ dailyResponse, downs, historyData }) => {
             >
                 <div className="bg-white rounded-lg shadow-md p-8 hover:shadow-lg">
                     <LineChart data={ dailyResponse } />
+                    { console.log('dailyResponse: ', dailyResponse) }
                 </div>
             </Tooltip>
             <Tooltip

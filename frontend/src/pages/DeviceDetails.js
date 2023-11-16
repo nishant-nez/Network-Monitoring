@@ -81,9 +81,9 @@ const DeviceDetails = () => {
 
             // average response times
             const tempDailyResponse = [];
-            for (const date in groupedData) {
-                if (groupedData.hasOwnProperty(date)) {
-                    const objects = groupedData[date];
+            for (const date in tempData) {
+                if (tempData.hasOwnProperty(date)) {
+                    const objects = tempData[date];
                     let totalResponse = 0;
 
                     objects.forEach(obj => {

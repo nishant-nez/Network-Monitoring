@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toast, ToastBox } from "../components/Toast";
@@ -71,9 +71,6 @@ const Login = () => {
         }
     };
 
-
-
-
     return (
         <div className="main-content">
             { isLoggedin && navigate("/") && console.log("-------------navigate called by login line 72") }
@@ -97,6 +94,7 @@ const Login = () => {
                                             type="text"
                                             value={ username }
                                             onChange={ (e) => setUsername(e.target.value) }
+                                            required
                                             placeholder="Enter your username" />
                                     </div>
                                     <div className="pt-9">
@@ -105,6 +103,7 @@ const Login = () => {
                                             type="password"
                                             value={ password }
                                             onChange={ (e) => setPassword(e.target.value) }
+                                            required
                                             placeholder="Enter your password" />
                                     </div>
                                     <div className="mt-10 flex items-center justify-center">

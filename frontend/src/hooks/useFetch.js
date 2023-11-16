@@ -21,6 +21,7 @@ const useFetch = (url) => {
             }
         }).then(res => {
             if (res.status === 401) {
+                console.log("----------------------toggleLogout() called by useFetch LINE 25");
                 toggleLogout();
                 console.log('toggle logout called by USEFETCH')
             } else if (!res.ok) {

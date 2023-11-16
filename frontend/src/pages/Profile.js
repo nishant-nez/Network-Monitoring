@@ -3,24 +3,12 @@ import { Toast, ToastBox } from "../components/Toast";
 import { backend } from '../constants';
 import { AuthContext } from "../contexts/AuthContext";
 import { EmailContext } from "../contexts/EmailContext";
-import { redirect, useNavigate } from 'react-router-dom';
-import {
-    Typography,
-    List,
-    ListItem,
-    ListItemSuffix,
-    Card,
-    IconButton,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Button,
-    Spinner,
-} from "@material-tailwind/react";
+import { useNavigate } from 'react-router-dom';
+import { Button, Spinner } from "@material-tailwind/react";
 import { useState, useEffect, useContext } from "react";
 
 import useFetch from "../hooks/useFetch";
+import AddEmailForm from "../components/AddEmailForm";
 
 
 
@@ -66,7 +54,9 @@ const Profile = () => {
 
     useEffect(() => {
         if (!isLoggedin) {
-            redirect('/login');
+            console.log("-------------navigate to /login called by profile line 70");
+            console.log('isLoggedin: ', isLoggedin);
+            navigate('/login');
         }
     }, [isLoggedin]);
 
@@ -80,6 +70,7 @@ const Profile = () => {
             }
         }).then(res => {
             if (res.status === 401) {
+                console.log("----------------------toggleLogout() called by Profile LINE 84");
                 toggleLogout();
             } else if (!res.ok) {
                 throw Error('Could not delete email');
@@ -109,6 +100,7 @@ const Profile = () => {
             }).then(res => {
                 if (res.status === 401) {
                     handleOpen();
+                    console.log("----------------------toggleLogout() called by Profile LINE 114");
                     toggleLogout();
                 } else if (!res.ok) {
                     handleOpen();
@@ -136,15 +128,13 @@ const Profile = () => {
 
     return (
         <>
-            { !isLoggedin && navigate('/login') }
+            { !isLoggedin && navigate('/login') && console.log("-------------navigate to /login called by profile line 142") }
             <ComplexNavbar />
             { useIsPending && emailIsPending && <Spinner /> }
             { userData && emailList &&
                 <>
                     <div className="container mx-auto my-32">
                         <div>
-                            { console.log('emaillist: ') }
-                            { console.log(emailList) }
                             <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
                                 <div className="flex justify-center">
                                     <img src={ process.env.PUBLIC_URL + '/deerwalk-logo.png' } alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110" />
@@ -188,61 +178,17 @@ const Profile = () => {
                         </div>
                     </div>
                     {/* FORM */ }
-                    <Dialog open={ open } handler={ handleOpen }>
-                        <DialogHeader>Add a New Recipient!</DialogHeader>
-                        <DialogBody>
-                            <form className="bg-white px-8 pt-6 pb-8 mb-4" onSubmit={ handleAdd }>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                                        Email <span className="text-red-400">*</span>
-                                    </label>
-                                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="email"
-                                        type="email"
-                                        required
-                                        value={ email }
-                                        onChange={ (e) => setEmail(e.target.value) }
-                                        placeholder="example@email.com" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                                        Description
-                                    </label>
-                                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="description"
-                                        type="text"
-                                        value={ description }
-                                        onChange={ (e) => setDescription(e.target.value) }
-                                        placeholder="Description" />
-                                </div>
-
-                                <div className="flex items-center justify-center mx-4">
-                                    {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                                Add Device
-                            </button> */}
-                                    { !addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" size="sm" type='submit'>
-                                        Add Recipient
-                                    </Button> }
-                                    { addPending && <Button className="flex items-center gap-6 px-6 py-3 mt-4 text-sm" disabled size="sm" type='submit'>
-                                        Add Recipient
-                                    </Button> }
-                                </div>
-                            </form>
-                        </DialogBody>
-                        <DialogFooter>
-                            <Button
-                                variant="text"
-                                color="red"
-                                onClick={ handleOpen }
-                                className="mr-1"
-                            >
-                                <span>Cancel</span>
-                            </Button>
-                        </DialogFooter>
-                    </Dialog>
+                    <AddEmailForm
+                        open={ open }
+                        handleOpen={ handleOpen }
+                        handleAdd={ handleAdd }
+                        email={ email }
+                        setEmail={ setEmail }
+                        description={ description }
+                        setDescription={ setDescription }
+                        addPending={ addPending }
+                    />
                 </>
-
-
             }
             <ToastBox />
         </>

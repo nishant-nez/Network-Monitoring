@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toast, ToastBox } from "../components/Toast";
 import { AuthContext } from "../contexts/AuthContext";
+import { DeviceContext } from "../contexts/DeviceContext";
 import { backend } from '../constants';
 import BackgroundParticles from "../components/BackgroundParticles";
 import Footer from "../components/Footer";
@@ -13,7 +14,20 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [token, setToken] = useState(null);
     const { toggleLogin, isLoggedin, toggleLogout } = useContext(AuthContext);
+    const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        console.log('use effect called on Login-----------------------------------');
+        console.log('isloggedin: ', isLoggedin);
+        if (isLoggedin) {
+            console.log("-------------navigate t0 / called by login line 65");
+            console.log('isLoggedin: ', isLoggedin);
+            navigate("/");
+        }
+    }, [isLoggedin, navigate, token, toggleLogin, toggleLogout]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,31 +50,33 @@ const Login = () => {
                 console.log('Login Successful, ', json.accessToken);
                 localStorage.setItem('user', JSON.stringify(json.accessToken));
                 setToken(json.accessToken);
+                //
                 toggleLogin();
+                console.log("-------------navigate to / called by login line 43");
+                console.log('isLoggedin: ', isLoggedin);
+                updateDevices();
                 navigate("/");
             } else {
                 const errMessage = await response.json();
                 console.log(errMessage)
                 Toast('error', errMessage.message);
+                console.log("----------------------toggleLogout() called by Login LINE 49");
                 toggleLogout();
             }
         } catch (err) {
             console.log('Error: ', err);
             Toast('error', err);
+            console.log("----------------------toggleLogout() called by Login LINE 55");
             toggleLogout();
         }
     };
 
-    useEffect(() => {
-        if (isLoggedin) {
-            navigate("/");
-        }
-    }, [isLoggedin, navigate]);
+
 
 
     return (
         <div className="main-content">
-            { isLoggedin && navigate("/") }
+            { isLoggedin && navigate("/") && console.log("-------------navigate called by login line 72") }
             {/* <TestPage /> */ }
             <BackgroundParticles />
             <div className="min-w-full min-h-[100vh] flex justify-center items-center bg-gray-200">

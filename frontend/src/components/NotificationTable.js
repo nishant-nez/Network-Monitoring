@@ -52,7 +52,7 @@ const NotificationTable = ({ data }) => {
                             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
                             return (
-                                <tr key={ content }>
+                                <tr key={ sentOn }>
                                     <td className={ classes }>
                                         <Typography
                                             variant="small"

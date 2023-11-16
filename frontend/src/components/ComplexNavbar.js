@@ -81,8 +81,8 @@ function ProfileMenu() {
                             onClick={ () => {
                                 setIsMenuOpen(false);
                                 if (label === "Sign Out") {
+                                    console.log("----------------------toggleLogout() called by NAVBAR LINE 85");
                                     toggleLogout();
-                                    console.log("toggle logout called by NAVBAR");
                                 } else if (label === "Profile") {
                                     navigate('/profile');
                                 }

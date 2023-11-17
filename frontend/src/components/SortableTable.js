@@ -28,9 +28,27 @@ const TimeAgoNoSuffix = (date) => {
     return formatDistanceToNow(new Date(date));
 }
 
+function searchObjects(data, searchTerm) {
+    // Convert the searchTerm to lowercase for case-insensitive search
+    const lowerSearchTerm = searchTerm.toLowerCase();
+
+    // Filter the array based on whether the searchTerm is present in any property value
+    const result = data.filter(obj => {
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key) && typeof obj[key] === 'string' && obj[key].toLowerCase().includes(lowerSearchTerm)) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    return result;
+}
+
 export default function SortableTable(props) {
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectedTab, setSelectedTab] = useState('all');
-    const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
+    const { devices, isPending } = useContext(DeviceContext);
     // console.log('devices: ' + devices)
     const [data, setData] = useState(devices);
     // console.log('data: ' + data)
@@ -104,6 +122,9 @@ export default function SortableTable(props) {
                     TABLE_HEAD={ TABLE_HEAD }
                     TABLE_ROWS={ TABLE_ROWS }
                     TABS={ TABS }
+                    searchObjects={ searchObjects }
+                    searchTerm={ searchTerm }
+                    setSearchTerm={ setSearchTerm }
                 />
             }
         </>

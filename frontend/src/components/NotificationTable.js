@@ -7,13 +7,13 @@ const NotificationTable = ({ data }) => {
     const TABLE_ROWS = [];
 
     data.map((obj) => {
-        TABLE_ROWS.push(
+        return (TABLE_ROWS.push(
             {
                 content: obj.content,
                 recipients: obj.recipients.join(', '),
                 sentOn: format(parseISO(obj.sentAt), 'dd-MMM h:mm aa'),
             }
-        );
+        ));
     });
     // Sort TABLE_ROWS based on sentOn in descending order
     TABLE_ROWS.sort((a, b) => {

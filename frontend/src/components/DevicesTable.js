@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CiCircleInfo } from "react-icons/ci";
 import {
@@ -15,7 +16,7 @@ import {
     Tooltip,
 } from "@material-tailwind/react";
 
-const DevicesTable = ({ selectedTab, handleTabChange, data, TABLE_HEAD, TABLE_ROWS, TABS }) => {
+const DevicesTable = ({ selectedTab, handleTabChange, data, TABLE_HEAD, TABLE_ROWS, TABS, searchTerm, setSearchTerm }) => {
     return (
         <Card className="h-full max-h-[100vh] w-full">
             <CardHeader floated={ false } shadow={ false } className="rounded-none pt-2">
@@ -36,6 +37,8 @@ const DevicesTable = ({ selectedTab, handleTabChange, data, TABLE_HEAD, TABLE_RO
                     <div className="w-full md:w-72">
                         <Input
                             label="Search"
+                            value={ searchTerm }
+                            onChange={ (e) => setSearchTerm(e.target.value) }
                             icon={ <MagnifyingGlassIcon className="h-5 w-5" /> }
                         />
                     </div>

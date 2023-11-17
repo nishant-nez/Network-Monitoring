@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { Button, Dialog, DialogHeader, DialogBody, DialogFooter, Tooltip } from "@material-tailwind/react";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
 
 const EditDeviceForm = ({ handleDelete, handleSubmit, open, handleOpen, name, type, ip, location, description, setName, setType, setIP, setLocation, setDescription, isPending }) => {
     return (

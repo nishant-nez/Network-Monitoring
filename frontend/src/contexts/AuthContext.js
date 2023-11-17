@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 import { backend } from '../constants';
 import 'react-toastify/dist/ReactToastify.css';
 

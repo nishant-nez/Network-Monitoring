@@ -14,7 +14,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [token, setToken] = useState(null);
     const { toggleLogin, isLoggedin, toggleLogout } = useContext(AuthContext);
-    const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
+    const { updateDevices } = useContext(DeviceContext);
     const navigate = useNavigate();
 
 
@@ -73,7 +73,7 @@ const Login = () => {
 
     return (
         <div className="main-content">
-            { isLoggedin && navigate("/") && console.log("-------------navigate called by login line 72") }
+            { isLoggedin && navigate("/") }
             {/* <TestPage /> */ }
             <BackgroundParticles />
             <div className="min-w-full min-h-[100vh] flex justify-center items-center bg-gray-200">

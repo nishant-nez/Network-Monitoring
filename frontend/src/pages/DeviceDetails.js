@@ -41,7 +41,7 @@ const DeviceDetails = () => {
 
     //
 
-    const { isLoggedin, toggleLogin, toggleLogout } = useContext(AuthContext);
+    const { isLoggedin, toggleLogout } = useContext(AuthContext);
     const { data, isPending, error } = useFetch('/api/devices/' + id);
     const { data: notificationsData, isPending: notificationIsPending, error: notificationsError } = useFetch('/api/notification/' + id);
     const { data: historyData, isPending: historyIsPending, error: historyError } = useFetch('/api/history/' + id);
@@ -195,7 +195,11 @@ const DeviceDetails = () => {
     return (
         <>
             <ComplexNavbar />
-            { isPending && historyIsPending && <Spinner /> }
+            { (isPending || historyIsPending) &&
+                <div className="w-full min-h-[90vh] flex items-center justify-center">
+                    <Spinner className="h-20 w-20" />
+                </div>
+            }
 
             { error && Toast('error', error) }
             { historyError && Toast('error', historyError) }
@@ -238,8 +242,8 @@ const DeviceDetails = () => {
                     <div>
                         <div className="mb-8 flex items-center justify-between gap-8">
                             <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
-                                <Button className="flex items-center gap-3 text-lg" size="sm" onClick={ handleOpen }>
-                                    <PencilIcon strokeWidth={ 2 } className="h-4 w-4" /> Edit Device
+                                <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
+                                    <PencilIcon strokeWidth={ 4 } className="h-6 w-6" /> Edit Device
                                 </Button>
                             </div>
                         </div>

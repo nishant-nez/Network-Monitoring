@@ -32,7 +32,7 @@ function TrashIcon() {
 
 const Profile = () => {
     document.title = "Profile | Network Monitoring";
-    const { data: userData, isPending: useIsPending, error: useError } = useFetch('/api/users/current');
+    const { data: userData, isPending: userIsPending, error: userError } = useFetch('/api/users/current');
     // let { data: emailData, isPending: emailIsPending, error: emailError } = useFetch('/api/recipients');
     const { emailList, updateEmail, isPending: emailIsPending, error: emailError } = useContext(EmailContext);
 
@@ -43,11 +43,11 @@ const Profile = () => {
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
-    const { toggleLogin, isLoggedin, toggleLogout } = useContext(AuthContext);
+    const { isLoggedin, toggleLogout } = useContext(AuthContext);
 
     const handleOpen = () => setOpen(!open);
 
-    const [token, setToken] = useState(() => {
+    const token = useState(() => {
         const storedToken = localStorage.getItem('user');
         return storedToken ? JSON.parse(storedToken) : null;
     });
@@ -58,7 +58,7 @@ const Profile = () => {
             console.log('isLoggedin: ', isLoggedin);
             navigate('/login');
         }
-    }, [isLoggedin]);
+    }, [isLoggedin, navigate]);
 
     const handleDelete = (id) => {
         console.log(id);
@@ -130,7 +130,13 @@ const Profile = () => {
         <>
             { !isLoggedin && navigate('/login') && console.log("-------------navigate to /login called by profile line 142") }
             <ComplexNavbar />
-            { (useIsPending || emailIsPending) && <Spinner className="h-12 w-12" /> }
+            { (userIsPending || emailIsPending) &&
+                <div className="w-full min-h-[90vh] flex items-center justify-center">
+                    <Spinner className="h-20 w-20" />
+                </div>
+            }
+            { userError && Toast('error', userError) }
+            { emailError && Toast('error', emailError) }
             { userData && emailList &&
                 <>
                     <div className="container mx-auto my-32">
@@ -145,7 +151,7 @@ const Profile = () => {
                                     {/* <p className="text-center text-sm text-gray-400 font-medium">UI Components Factory</p> */ }
                                     <div className="my-5 px-6">
                                         <a href="/profile" className="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
-                                            Button?
+                                            ''
                                         </a>
                                     </div>
                                     <div className="flex justify-between items-center my-5 px-6">

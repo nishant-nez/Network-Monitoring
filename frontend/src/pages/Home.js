@@ -14,8 +14,6 @@ import {
     Spinner,
 } from "@material-tailwind/react";
 import { PlusIcon } from "@heroicons/react/24/solid";
-// import AddDeviceForm from "../components/AddDeviceForm";
-import Overview from '../components/Overview';
 import { Toast, ToastBox } from "../components/Toast";
 import OverviewCards from '../components/OverviewCards';
 
@@ -24,7 +22,7 @@ import OverviewCards from '../components/OverviewCards';
 const Home = () => {
     document.title = "Home | Network Monitoring";
     const navigate = useNavigate();
-    const { isLoggedin, toggleLogin, toggleLogout } = useContext(AuthContext);
+    const { isLoggedin, toggleLogout } = useContext(AuthContext);
     const { devices, updateDevices, isPending, error } = useContext(DeviceContext);
     // const [data, setData] = useState(null);
     // const { data, isPending, error } = useFetch('/api/devices');
@@ -56,7 +54,7 @@ const Home = () => {
     const [ip, setIP] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
-    const [token, setToken] = useState(() => {
+    const token = useState(() => {
         const storedToken = localStorage.getItem('user');
         return storedToken ? JSON.parse(storedToken) : null;
     });
@@ -110,66 +108,74 @@ const Home = () => {
     };
 
     return (
-        <div className="home">
+        <>
             { !isLoggedin && navigate("/login") }
-            <ComplexNavbar />
 
-            { isPending && <Spinner /> }
+            { isLoggedin &&
+                <>
+                    <ComplexNavbar />
+                    { isPending &&
+                        <div className="w-full min-h-[90vh] flex items-center justify-center">
+                            <Spinner className="h-20 w-20" />
+                        </div>
+                    }
 
-            { error && Toast('error', error) }
+                    { error && Toast('error', error) }
 
-            { <>
-                {/* { devices.length === 0 && navigate('/') } */ }
-                <div className="mb-8 flex items-center justify-between gap-8">
-                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
-                        <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
-                            <PlusIcon strokeWidth={ 4 } className="h-6 w-6" /> Add Device
-                        </Button>
-                    </div>
-                </div>
+                    { devices && <>
+                        {/* { devices.length === 0 && navigate('/') } */ }
+                        <div className="mb-8 flex items-center justify-between gap-8">
+                            <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
+                                <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
+                                    <PlusIcon strokeWidth={ 4 } className="h-6 w-6" /> Add Device
+                                </Button>
+                            </div>
+                        </div>
 
-                {/* TEST CARDS */ }
-                <OverviewCards />
+                        {/* TEST CARDS */ }
+                        <OverviewCards />
 
-                {/* <Overview /> */ }
+                        {/* <Overview /> */ }
 
-                <div className="main-table mx-14 my-10">
-                    <SortableTable filter={ '' } />
-                </div>
+                        <div className="main-table mx-14 my-10">
+                            <SortableTable filter={ '' } />
+                        </div>
 
-                {/* <AddDeviceForm open={ open } handleOpen={ handleOpen } />
+                        {/* <AddDeviceForm open={ open } handleOpen={ handleOpen } />
                  */}
-                <Dialog open={ open } handler={ handleOpen }>
-                    <DialogHeader>Add a New Device!</DialogHeader>
-                    <AddDeviceForm
-                        handleSubmit={ handleSubmit }
-                        name={ name }
-                        type={ type }
-                        ip={ ip }
-                        location={ location }
-                        description={ description }
-                        setName={ setName }
-                        setType={ setType }
-                        setIP={ setIP }
-                        setLocation={ setLocation }
-                        setDescription={ setDescription }
-                        addPending={ addPending }
-                    />
-                    <DialogFooter>
-                        <Button
-                            variant="text"
-                            color="red"
-                            onClick={ handleOpen }
-                            className="mr-1"
-                        >
-                            <span>Cancel</span>
-                        </Button>
-                    </DialogFooter>
-                </Dialog>
-            </> }
+                        <Dialog open={ open } handler={ handleOpen }>
+                            <DialogHeader>Add a New Device!</DialogHeader>
+                            <AddDeviceForm
+                                handleSubmit={ handleSubmit }
+                                name={ name }
+                                type={ type }
+                                ip={ ip }
+                                location={ location }
+                                description={ description }
+                                setName={ setName }
+                                setType={ setType }
+                                setIP={ setIP }
+                                setLocation={ setLocation }
+                                setDescription={ setDescription }
+                                addPending={ addPending }
+                            />
+                            <DialogFooter>
+                                <Button
+                                    variant="text"
+                                    color="red"
+                                    onClick={ handleOpen }
+                                    className="mr-1"
+                                >
+                                    <span>Cancel</span>
+                                </Button>
+                            </DialogFooter>
+                        </Dialog>
+                    </> }
 
-            <ToastBox />
-        </div>
+                    <ToastBox />
+                </>
+            }
+        </>
     );
 }
 

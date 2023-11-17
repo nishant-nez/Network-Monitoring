@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import { backend } from '../constants';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,35 +11,38 @@ const EmailContextProvider = (props) => {
         return storedToken ? JSON.parse(storedToken) : null;
     });
 
+    const { isLoggedin } = useContext(AuthContext);
     const [emailList, setEmailList] = useState([]);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
 
     const updateEmail = async () => {
-        try {
-            // Set isPending to true before making the request
-            setIsPending(true);
+        if (isLoggedin) {
+            try {
+                // Set isPending to true before making the request
+                setIsPending(true);
 
-            // Make the request
-            const response = await fetch(backend + '/api/recipients', {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${ token }`,
-                    'Content-Type': 'application/json',
-                }
-            });
-            const data = await response.json();
+                // Make the request
+                const response = await fetch(backend + '/api/recipients', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${ token }`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
 
-            // Update the state with the new data
-            setEmailList(data);
+                // Update the state with the new data
+                setEmailList(data);
 
-            // Set isPending to false after the request is complete
-            setIsPending(false);
-        } catch (error) {
-            // Handle errors and set the error state
-            console.error('Error updating email:', error);
-            setError(error);
-            setIsPending(false);
+                // Set isPending to false after the request is complete
+                setIsPending(false);
+            } catch (error) {
+                // Handle errors and set the error state
+                console.error('Error updating email:', error);
+                setError(error);
+                setIsPending(false);
+            }
         }
     }
 

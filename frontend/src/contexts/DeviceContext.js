@@ -15,7 +15,7 @@ const DeviceContextProvider = (props) => {
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { toggleLogin, isLoggedin, toggleLogout } = useContext(AuthContext);
+    const { isLoggedin, toggleLogout } = useContext(AuthContext);
 
     const updateDevices = () => {
         console.log("--------------------------------------update devices has been called with isloggiedin: ", isLoggedin);

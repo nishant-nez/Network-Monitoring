@@ -4,6 +4,7 @@ import {
     Card,
     Typography,
 } from "@material-tailwind/react";
+import { useNavigate } from 'react-router-dom';
 
 const OverviewCards = () => {
     const { devices: data } = useContext(DeviceContext);
@@ -11,6 +12,7 @@ const OverviewCards = () => {
     const [downCount, setDownCount] = useState(0);
     const [unknownCount, setUnknownCount] = useState(0);
     const [cards, setCards] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (data && Array.isArray(data)) {
@@ -23,21 +25,25 @@ const OverviewCards = () => {
                     title: 'Switches',
                     count: data.filter(device => device.type === 'Switch').length,
                     icon: './switch.png',
+                    to: '/switch',
                 },
                 {
                     title: 'APs',
                     count: data.filter(device => device.type === 'Access Point').length,
                     icon: './ap.png',
+                    to: '/ap',
                 },
                 {
                     title: 'Domains',
                     count: data.filter(device => device.type === 'Domain').length,
                     icon: './globe.png',
+                    to: '/domain',
                 },
                 {
                     title: 'Other',
                     count: data.filter(device => !['Switch', 'Access Point', 'Domain'].includes(device.type)).length,
                     icon: './computer.png',
+                    to: '/other',
                 },
             ]);
         }
@@ -47,14 +53,16 @@ const OverviewCards = () => {
         <div className="mx-14 bg-white rounded-lg shadow-lg p-10 mb-6">
             <div class="mx-auto grid">
                 <h2 class="text-2xl font-bold text-gray-800 pb-6 text-center">
-                    Dashboard
+                    Overview
                 </h2>
 
                 <div class="grid gap-6 mb-2 md:grid-cols-2 l:grid-cols-3 xl:grid-cols-5">
 
                     { cards.map((card, index) => {
                         return (
-                            <Card color="gray" variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] p-8" key={ card.title }>
+                            <Card color="gray" variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] p-8 cursor-pointer"
+                                key={ card.title }
+                                onClick={ () => { navigate(card.to) } }>
                                 <div className="flex gap-8 items-center">
                                     <div class="rounded-full">
                                         <img src={ process.env.PUBLIC_URL + card.icon } alt="" />
@@ -75,7 +83,7 @@ const OverviewCards = () => {
                     }) }
 
                     { downCount === 0 &&
-                        <Card variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] bg-green-300 h-[8rem]">
+                        <Card variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] bg-green-300 h-[8rem] cursor-pointer">
                             <div className="flex items-center justify-center text-center h-full">
                                 <Typography
                                     variant="h1"
@@ -88,7 +96,7 @@ const OverviewCards = () => {
                         </Card>
                     }
                     { downCount > 0 &&
-                        <Card variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] animate-pulse bg-red-300 h-[8rem]">
+                        <Card variant="gradient" className="w-full l:max-w-[22rem] xl:max-w-[19rem] animate-pulse bg-red-300 h-[8rem] cursor-pointer">
                             <div className="flex items-center justify-center text-center h-full">
                                 <Typography
                                     variant="h1"

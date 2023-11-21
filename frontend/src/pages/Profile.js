@@ -129,74 +129,78 @@ const Profile = () => {
     return (
         <>
             { !isLoggedin && navigate('/login') && console.log("-------------navigate to /login called by profile line 142") }
-            <ComplexNavbar />
-            { (userIsPending || emailIsPending) &&
-                <div className="w-full min-h-[90vh] flex items-center justify-center">
-                    <Spinner className="h-20 w-20" />
-                </div>
-            }
-            { userError && Toast('error', userError) }
-            { emailError && Toast('error', emailError) }
-            { userData && emailList &&
-                <>
-                    <div className="container mx-auto my-32">
-                        <div>
-                            <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
-                                <div className="flex justify-center">
-                                    <img src={ process.env.PUBLIC_URL + '/deerwalk-logo.png' } alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110" />
-                                </div>
+            { isLoggedin && <>
 
-                                <div className="mt-16">
-                                    <h1 className="font-bold text-center text-3xl text-gray-900">{ userData.username }</h1>
-                                    {/* <p className="text-center text-sm text-gray-400 font-medium">UI Components Factory</p> */ }
-                                    <div className="my-5 px-6">
-                                        <a href="/profile" className="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
-                                            ''
-                                        </a>
+                <ComplexNavbar />
+                { (userIsPending || emailIsPending) &&
+                    <div className="w-full min-h-[90vh] flex items-center justify-center">
+                        <Spinner className="h-20 w-20" />
+                    </div>
+                }
+                { userError && Toast('error', userError) }
+                { emailError && Toast('error', emailError) }
+                { userData && emailList &&
+                    <>
+                        <div className="container mx-auto my-32">
+                            <div>
+                                <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
+                                    <div className="flex justify-center">
+                                        <img src={ process.env.PUBLIC_URL + '/deerwalk-logo.png' } alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110" />
                                     </div>
-                                    <div className="flex justify-between items-center my-5 px-6">
-                                    </div>
-                                    <hr className="my-6 mx-4" />
-                                    <div className="w-full">
-                                        <div className="flex items-center justify-between px-6">
-                                            <h3 className="font-semibold text-lg text-gray-900 text-left">Email Recipients</h3>
-                                            <Button onClick={ handleOpen }>Add Recipient</Button>
+
+                                    <div className="mt-16">
+                                        <h1 className="font-bold text-center text-3xl text-gray-900">{ userData.username }</h1>
+                                        {/* <p className="text-center text-sm text-gray-400 font-medium">UI Components Factory</p> */ }
+                                        <div className="my-5 px-6">
+                                            <a href="/profile" className="text-gray-200 block rounded-lg text-center font-medium leading-6 px-6 py-3 bg-gray-900 hover:bg-black hover:text-white">
+                                                ''
+                                            </a>
                                         </div>
-                                        <div className="mt-5 w-full flex flex-col items-center overflow-hidden text-base">
-                                            { Array.isArray(emailList) && emailList.map(obj => {
-                                                return (
-                                                    <div
-                                                        className="flex justify-between items-center w-full border border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 overflow-hidden"
-                                                        key={ obj._id }>
-                                                        <div>
-                                                            { obj.email }
+                                        <div className="flex justify-between items-center my-5 px-6">
+                                        </div>
+                                        <hr className="my-6 mx-4" />
+                                        <div className="w-full">
+                                            <div className="flex items-center justify-between px-6">
+                                                <h3 className="font-semibold text-lg text-gray-900 text-left">Email Recipients</h3>
+                                                <Button onClick={ handleOpen }>Add Recipient</Button>
+                                            </div>
+                                            <div className="mt-5 w-full flex flex-col items-center overflow-hidden text-base">
+                                                { Array.isArray(emailList) && emailList.map(obj => {
+                                                    return (
+                                                        <div
+                                                            className="flex justify-between items-center w-full border border-gray-100 text-gray-600 py-4 pl-6 pr-3 hover:bg-gray-100 transition duration-150 overflow-hidden"
+                                                            key={ obj._id }>
+                                                            <div>
+                                                                { obj.email }
+                                                            </div>
+                                                            <div onClick={ () => handleDelete(obj._id) } className="cursor-pointer mx-4">
+                                                                <TrashIcon />
+                                                            </div>
                                                         </div>
-                                                        <div onClick={ () => handleDelete(obj._id) } className="cursor-pointer mx-4">
-                                                            <TrashIcon />
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }) }
+                                                    )
+                                                }) }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {/* FORM */ }
-                    <AddEmailForm
-                        open={ open }
-                        handleOpen={ handleOpen }
-                        handleAdd={ handleAdd }
-                        email={ email }
-                        setEmail={ setEmail }
-                        description={ description }
-                        setDescription={ setDescription }
-                        addPending={ addPending }
-                    />
-                </>
+                        {/* FORM */ }
+                        <AddEmailForm
+                            open={ open }
+                            handleOpen={ handleOpen }
+                            handleAdd={ handleAdd }
+                            email={ email }
+                            setEmail={ setEmail }
+                            description={ description }
+                            setDescription={ setDescription }
+                            addPending={ addPending }
+                        />
+                    </>
+                }
+                <ToastBox />
+            </>
             }
-            <ToastBox />
         </>
     );
 }

@@ -51,12 +51,12 @@ const OverviewCards = () => {
 
     return (
         <div className="mx-14 bg-white rounded-lg shadow-lg p-10 mb-6">
-            <div class="mx-auto grid">
-                <h2 class="text-2xl font-bold text-gray-800 pb-6 text-center">
+            <div className="mx-auto grid">
+                <h2 className="text-2xl font-bold text-gray-800 pb-6 text-center">
                     Overview
                 </h2>
 
-                <div class="grid gap-6 mb-2 md:grid-cols-2 l:grid-cols-3 xl:grid-cols-5">
+                <div className="grid gap-6 mb-2 md:grid-cols-2 l:grid-cols-3 xl:grid-cols-5">
 
                     { cards.map((card, index) => {
                         return (
@@ -64,7 +64,7 @@ const OverviewCards = () => {
                                 key={ card.title }
                                 onClick={ () => { navigate(card.to) } }>
                                 <div className="flex gap-8 items-center">
-                                    <div class="rounded-full">
+                                    <div className="rounded-full">
                                         <img src={ process.env.PUBLIC_URL + card.icon } alt="" />
                                     </div>
                                     <div>
@@ -73,7 +73,7 @@ const OverviewCards = () => {
                                             color="white"
                                             className="flex justify-center gap-1 text-2xl font-normal"
                                         > { card.title } </Typography>
-                                        <p class="text-xl font-semibold text-gray-400">
+                                        <p className="text-xl font-semibold text-gray-400">
                                             { card.count }
                                         </p>
                                     </div>

@@ -194,64 +194,70 @@ const DeviceDetails = () => {
 
     return (
         <>
-            <ComplexNavbar />
-            { (isPending || historyIsPending) &&
-                <div className="w-full min-h-[90vh] flex items-center justify-center">
-                    <Spinner className="h-20 w-20" />
-                </div>
-            }
-
-            { error && Toast('error', error) }
-            { historyError && Toast('error', historyError) }
-            { notificationsError && Toast('error', notificationsError) }
-
-            { data && historyData &&
+            { !isLoggedin && navigate('/login') }
+            { isLoggedin &&
                 <>
-                    {/* Grid Start */ }
-                    <div className="grid grid-cols-1 gap-10 mx-14 my-10 md:grid-cols-2">
-                        <DeviceDetailsCharts
-                            dailyResponse={ dailyResponse }
-                            downs={ downs }
-                            historyData={ historyData }
-                        />
-                        <DeviceDetailsCard data={ data } />
-                        <DeviceDetailsNotifications notificationIsPending={ notificationIsPending } notifications={ notifications } />
-                    </div>
-                    {/* Grid End */ }
 
-                    {/* Edit Device Form */ }
-                    <EditDeviceForm
-                        handleDelete={ handleDelete }
-                        handleSubmit={ handleSubmit }
-                        open={ open }
-                        handleOpen={ handleOpen }
-                        name={ name }
-                        type={ type }
-                        ip={ ip }
-                        location={ location }
-                        description={ description }
-                        setName={ setName }
-                        setType={ setType }
-                        setIP={ setIP }
-                        setLocation={ setLocation }
-                        setDescription={ setDescription }
-                        isPending={ isPending }
-                    />
-
-                    {/* Edit Device Button */ }
-                    <div>
-                        <div className="mb-8 flex items-center justify-between gap-8">
-                            <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
-                                <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
-                                    <PencilIcon strokeWidth={ 4 } className="h-6 w-6" /> Edit Device
-                                </Button>
-                            </div>
+                    <ComplexNavbar />
+                    { (isPending || historyIsPending) &&
+                        <div className="w-full min-h-[90vh] flex items-center justify-center">
+                            <Spinner className="h-20 w-20" />
                         </div>
-                    </div>
+                    }
+
+                    { error && Toast('error', error) }
+                    { historyError && Toast('error', historyError) }
+                    { notificationsError && Toast('error', notificationsError) }
+
+                    { data && historyData &&
+                        <>
+                            {/* Grid Start */ }
+                            <div className="grid grid-cols-1 gap-10 mx-14 my-10 md:grid-cols-2">
+                                <DeviceDetailsCharts
+                                    dailyResponse={ dailyResponse }
+                                    downs={ downs }
+                                    historyData={ historyData }
+                                />
+                                <DeviceDetailsCard data={ data } />
+                                <DeviceDetailsNotifications notificationIsPending={ notificationIsPending } notifications={ notifications } />
+                            </div>
+                            {/* Grid End */ }
+
+                            {/* Edit Device Form */ }
+                            <EditDeviceForm
+                                handleDelete={ handleDelete }
+                                handleSubmit={ handleSubmit }
+                                open={ open }
+                                handleOpen={ handleOpen }
+                                name={ name }
+                                type={ type }
+                                ip={ ip }
+                                location={ location }
+                                description={ description }
+                                setName={ setName }
+                                setType={ setType }
+                                setIP={ setIP }
+                                setLocation={ setLocation }
+                                setDescription={ setDescription }
+                                isPending={ isPending }
+                            />
+
+                            {/* Edit Device Button */ }
+                            <div>
+                                <div className="mb-8 flex items-center justify-between gap-8">
+                                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row fixed right-10 bottom-10 z-10">
+                                        <Button className="flex items-center gap-3 text-lg" size="lg" onClick={ handleOpen }>
+                                            <PencilIcon strokeWidth={ 4 } className="h-6 w-6" /> Edit Device
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    }
+
+                    <ToastBox />
                 </>
             }
-
-            <ToastBox />
         </>
     );
 }

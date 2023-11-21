@@ -1,18 +1,27 @@
 import ComplexNavbar from "../components/ComplexNavbar";
 import SortableTable from "../components/SortableTable";
+import { useContext } from "react";
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from "../contexts/AuthContext";
 
 
-const Domain = () => {
-    document.title = "Domain | Network Monitoring";
+const AP = () => {
+    document.title = "Access Points | Network Monitoring";
+    const navigate = useNavigate();
+    const { isLoggedin } = useContext(AuthContext);
     return (
         <>
-            <ComplexNavbar />
-
-            <div className="main-table mx-14 my-10">
-                <SortableTable filter={ 'Domain' } />
-            </div>
+            { !isLoggedin && navigate('/login') }
+            { isLoggedin &&
+                <>
+                    <ComplexNavbar />
+                    <div className="main-table mx-14 my-10">
+                        <SortableTable filter={ 'Domain' } />
+                    </div>
+                </>
+            }
         </>
     );
 }
 
-export default Domain;
+export default AP;

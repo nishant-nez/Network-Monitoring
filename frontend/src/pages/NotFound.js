@@ -1,6 +1,6 @@
 import ComplexNavbar from "../components/ComplexNavbar";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,13 @@ const NotFound = () => {
     document.title = "404 | Network Monitoring";
     const navigate = useNavigate();
     const { isLoggedin } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!isLoggedin) {
+            navigate('/login');
+        }
+    }, [isLoggedin, navigate]);
+
     return (
         <>
             { !isLoggedin && navigate('/login') }

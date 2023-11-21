@@ -1,6 +1,6 @@
 import ComplexNavbar from "../components/ComplexNavbar";
 import SortableTable from "../components/SortableTable";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -9,6 +9,13 @@ const AP = () => {
     document.title = "Access Points | Network Monitoring";
     const navigate = useNavigate();
     const { isLoggedin } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!isLoggedin) {
+            navigate('/login');
+        }
+    }, [isLoggedin, navigate]);
+
     return (
         <>
             { !isLoggedin && navigate('/login') }

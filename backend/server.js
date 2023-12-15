@@ -33,7 +33,7 @@ cron.schedule('*/5 * * * *', () => {
     updateDeviceStatus();
 });
 
-cron.schedule('*/1 * * * *', () => {
+cron.schedule('0 0 * * * *', () => {
     deleteOldEntries();
 });
 

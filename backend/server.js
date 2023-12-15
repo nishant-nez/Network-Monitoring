@@ -1,6 +1,7 @@
 const express = require("express");
 const cron = require("node-cron");
 const updateDeviceStatus = require("./config/updateDeviceStatus");
+const deleteOldEntries = require("./config/deleteOldEntries");
 const connectDb = require("./config/dbConnection");
 const errorHandler = require("./middleware/errorHandler");
 const cors = require("cors")
@@ -27,9 +28,13 @@ app.use('/api/notification', require("./routes/notificationRoute"));
 // middlewares
 app.use(errorHandler);
 
-// cron job
+// cron jobs
 cron.schedule('*/5 * * * *', () => {
     updateDeviceStatus();
+});
+
+cron.schedule('*/1 * * * *', () => {
+    deleteOldEntries();
 });
 
 app.listen(port, (error) => {

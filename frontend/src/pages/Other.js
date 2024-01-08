@@ -6,7 +6,7 @@ import { AuthContext } from "../contexts/AuthContext";
 
 
 const AP = () => {
-    document.title = "Access Points | Network Monitoring";
+    document.title = "Others | Network Monitoring";
     const navigate = useNavigate();
     const { isLoggedin } = useContext(AuthContext);
 

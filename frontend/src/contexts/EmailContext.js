@@ -43,6 +43,7 @@ const EmailContextProvider = (props) => {
                 setError(error);
                 setIsPending(false);
             }
+            setIsPending(false);
         }
     }
 

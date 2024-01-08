@@ -53,16 +53,37 @@ const EditDeviceForm = ({ handleDelete, handleSubmit, open, handleOpen, name, ty
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
-                            Location <span className="text-red-400">*</span>
+                            Device Type <span className="text-red-400">*</span>
                         </label>
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="location"
-                            type="text"
-                            placeholder="Location of Device"
-                            required
-                            value={ location }
-                            onChange={ (e) => setLocation(e.target.value) }
-                        />
+                        <div className="relative">
+                            <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+
+                                id="location"
+                                required
+                                value={ location }
+                                onChange={ (e) => setLocation(e.target.value) }
+                            >
+                                <option>Building 1</option>
+                                <option>Building 2</option>
+                                <option>Building 3</option>
+                                <option>Building 4 (SERVER)</option>
+                                <option>Building 5</option>
+                                <option>Building 6</option>
+                                <option>Building 8</option>
+                                <option>Building 10</option>
+                                <option>Building 11</option>
+                                <option>Building 13</option>
+                                <option>Front Desk</option>
+                                <option>Chitwan</option>
+                                <option>Physics Lab</option>
+                                <option>Hamro Patro</option>
+                                <option>Student Corner</option>
+                                <option>Canteen</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                            </div>
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">

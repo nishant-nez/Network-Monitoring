@@ -72,6 +72,7 @@ const Profile = () => {
             if (res.status === 401) {
                 console.log("----------------------toggleLogout() called by Profile LINE 84");
                 toggleLogout();
+                throw Error('Could not delete!');
             } else if (!res.ok) {
                 throw Error('Could not delete email');
             }
@@ -132,7 +133,7 @@ const Profile = () => {
             { isLoggedin && <>
 
                 <ComplexNavbar />
-                { (userIsPending || emailIsPending) &&
+                { ((userIsPending || emailIsPending)) &&
                     <div className="w-full min-h-[90vh] flex items-center justify-center">
                         <Spinner className="h-20 w-20" />
                     </div>

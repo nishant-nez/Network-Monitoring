@@ -13,6 +13,8 @@ import NotFound from './pages/NotFound';
 import DeviceDetails from './pages/DeviceDetails';
 import Profile from './pages/Profile'
 import EmailContextProvider from './contexts/EmailContext';
+import NetworkMap from './pages/NetworkMap';
+// import NetworkMap from './pages/MapNew';
 // import DeviceDetails from './pages/TestPage';
 // 
 
@@ -23,6 +25,11 @@ function App() {
         <DeviceContextProvider>
           <EmailContextProvider>
             <Routes>
+              <Route
+                exact
+                path="/map"
+                element={ <NetworkMap /> }
+              />
               <Route
                 exact
                 path="/"

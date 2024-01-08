@@ -22,6 +22,7 @@ import {
     ServerIcon,
     ComputerDesktopIcon,
     GlobeAltIcon,
+    MapIcon,
 } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
@@ -138,6 +139,11 @@ const navListItems = [
         label: "Other",
         icon: ComputerDesktopIcon,
         goto: '/other',
+    },
+    {
+        label: "Map",
+        icon: MapIcon,
+        goto: '/map',
     },
 ];
 

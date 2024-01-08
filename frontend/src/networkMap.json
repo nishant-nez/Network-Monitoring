@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    { "id": 1, "label": "Building 1", "title": "Building 1" },
+    { "id": 2, "label": "Building 2", "title": "Building 2" },
+    { "id": 3, "label": "Building 3", "title": "Building 3" },
+    {
+      "id": 4,
+      "label": "SERVER",
+      "title": "Building 4 (SERVER)",
+      "group": "building",
+      "fixed": true,
+      "shape": "database"
+    },
+    { "id": 5, "label": "Building 5", "title": "Building 5" },
+    { "id": 6, "label": "Building 6", "title": "Building 6" },
+    { "id": 7, "label": "Front Desk", "title": "Front Desk" },
+    { "id": 8, "label": "Building 8", "title": "Building 8" },
+    { "id": 9, "label": "Chitwan", "title": "Chitwan" },
+    { "id": 10, "label": "Building 10", "title": "Building 10" },
+    { "id": 11, "label": "Building 11", "title": "Building 11" },
+    { "id": 12, "label": "Physics Lab", "title": "Pysics Lab" },
+    { "id": 13, "label": "Building 13", "title": "Building 13" },
+    { "id": 14, "label": "Hamro Patro", "title": "Hamro Patro" },
+    { "id": 15, "label": "Student Corner", "title": "Student Corner" },
+    { "id": 16, "label": "Canteen", "title": "Canteen" }
+  ],
+  "edges": [
+    { "from": 4, "to": 1 },
+    { "from": 4, "to": 11 },
+    { "from": 4, "to": 9 },
+    { "from": 4, "to": 13 },
+    { "from": 4, "to": 3 },
+    { "from": 4, "to": 2 },
+    { "from": 4, "to": 12 },
+    { "from": 1, "to": 8 },
+    { "from": 1, "to": 16 },
+    { "from": 3, "to": 7 },
+    { "from": 3, "to": 7 },
+    { "from": 3, "to": 6 },
+    { "from": 8, "to": 15 },
+    { "from": 6, "to": 5 },
+    { "from": 6, "to": 10 },
+    { "from": 12, "to": 14 }
+  ]
+}

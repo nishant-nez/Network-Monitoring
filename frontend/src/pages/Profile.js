@@ -47,7 +47,7 @@ const Profile = () => {
 
     const handleOpen = () => setOpen(!open);
 
-    const token = useState(() => {
+    const [token, setToken] = useState(() => {
         const storedToken = localStorage.getItem('user');
         return storedToken ? JSON.parse(storedToken) : null;
     });

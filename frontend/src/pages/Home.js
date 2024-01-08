@@ -52,9 +52,9 @@ const Home = () => {
     const [name, setName] = useState('');
     const [type, setType] = useState('Switch');
     const [ip, setIP] = useState('');
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState('Building 1');
     const [description, setDescription] = useState('');
-    const token = useState(() => {
+    const [token, setToken] = useState(() => {
         const storedToken = localStorage.getItem('user');
         return storedToken ? JSON.parse(storedToken) : null;
     });
